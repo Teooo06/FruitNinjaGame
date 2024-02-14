@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.StackPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controller.MainController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controller.MainController">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true">
-         <image>
-            <Image url="@../images/background.jpg" />
-         </image>
-      </ImageView>
-      <Label layoutX="97.0" layoutY="76.0" styleClass="titolo" text="Fruit Ninja" textFill="WHITE" font="Gang of Three">
-         <font>
-            <Font size="53.0" />
-         </font>
-      </Label>
-      <Button accessibleHelp="click to play" accessibleText="click to play" layoutX="208.0" layoutY="200.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="183.0" text="PLAY">
-         <font>
-            <!--Font name="" size="41.0" /-->
-         </font>
-      </Button>
+      <AnchorPane id="mainGui-anchor" prefHeight="600.0" prefWidth="1027.0">
+         <children>
+            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="361.0" layoutY="317.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="299.0" text="PLAY">
+            <font>
+               <javafx.scene.text.Font name="Gang of Three"/>
+            </font>
+            </Button>
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane>
+   <stylesheets>
+      <URL value="@../cssFolder/style.css" />
+   </stylesheets>
+</StackPane>
