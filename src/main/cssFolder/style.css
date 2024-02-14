@@ -1,11 +1,9 @@
-
 @font-face {
-    font-family: "Gang of Three";
-    src: url("../../Resources/fonts/go3v2.ttf");
+    src: url("go3v2.ttf");
 }
 
 .text {
-    -fx-font-family: "Gang of Three";
+    -fx-font-family: 'Gang of Three';
 }
 
 .button {
@@ -15,13 +13,18 @@
     -fx-border-color: #000000;
     -fx-border-radius: 10;
     -fx-border-width: 2;
-    -fx-font-size: 50;
+    -fx-font-size: 70;
+}
+
+.titolo {
+    -fx-font-size: 100
+
 }
 
 .button:hover {
     -fx-background-color: #6f513f;
 }
 
-.titolo {
-    -fx-font-size: 80;
+#mainGui-anchor {
+    -fx-background-image: url('../immages/mainmenu.png');
 }
