@@ -1,5 +1,5 @@
 @font-face {
-    src: url("go3v2.ttf");
+    src: url(go3v2.ttf);
 }
 
 .text {
@@ -27,4 +27,14 @@
 
 #mainGui-anchor {
     -fx-background-image: url('../immages/mainmenu.png');
+}
+
+#background-anchor {
+    -fx-background-image: url('../immages/background.jpg');
+    -fx-background-size: 100% 100%;
+}
+
+.label {
+    -fx-font-size: 50;
+    -fx-text-fill: #ffffff;
 }
