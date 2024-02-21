@@ -7,24 +7,24 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controller.MainController">
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controller.MainController">
    <children>
-      <AnchorPane id="background-anchor" fx:id="anchorPaneGioco" prefHeight="200.0" prefWidth="200.0">
-         <children>
-            <Label fx:id="Timer" layoutX="217.0" layoutY="125.0" prefHeight="186.0" prefWidth="419.0" text="CIOAOOOOO" textFill="WHITE">
-               <font>
-                  <Font size="61.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-      <AnchorPane id="mainGui-anchor" prefHeight="600.0" prefWidth="1027.0">
+      <AnchorPane id="mainGui-anchor" fx:id="anchorPaneIniziale" prefHeight="600.0" prefWidth="1027.0">
          <children>
             <Button fx:id="PlayButton" alignment="CENTER" contentDisplay="CENTER" layoutX="361.0" layoutY="317.0" mnemonicParsing="false" onAction="#handlePlayButtonAction" prefHeight="130.0" prefWidth="299.0" text="PLAY">
             <font>
                <javafx.scene.text.Font name="Gang of Three" />
             </font>
             </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane id="background-anchor" fx:id="anchorPaneGioco" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Label fx:id="Timer" layoutX="298.0" layoutY="239.0" prefHeight="123.0" prefWidth="421.0" text="00:00:00" textFill="WHITE">
+               <font>
+                  <Font size="45.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
