@@ -13,6 +13,8 @@ public class Sprite
     private double positionY;    
     private double velocityX;
     private double velocityY;
+    private double rotationAngle; // Rotation angle in degrees
+    private double rotate; // Rotation angle in degrees
     private double width;
     private double height;
     private int difficolta;
@@ -76,6 +78,9 @@ public class Sprite
         velocityY = velocitaIniziale;
     }
 
+    public void setRotationAngle(double angleDegrees) {
+        this.rotationAngle = angleDegrees;
+    }
 
     public void addVelocity(double x, double y)
     {
@@ -88,6 +93,8 @@ public class Sprite
         positionX += velocityX * time;
         double tempoTrascorso = (System.currentTimeMillis() - tempoIniziale) / 1000.0;
         positionY += calcoloPosLancioY(tempoTrascorso);
+        // Rotation
+        rotate += rotationAngle * time;
     }
 
     public double calcoloPosLancioY(double time){
@@ -99,8 +106,12 @@ public class Sprite
     }
 
     public void render(GraphicsContext gc)
-    {
-        gc.drawImage( image, positionX, positionY );
+    {   
+        gc.save(); // Save the current state on the stack
+        gc.translate(positionX + image.getWidth() / 2, positionY + image.getHeight() / 2); // Translate to the center of
+        gc.rotate(rotate); // Rotate around the center of the image
+        gc.drawImage(image, -image.getWidth() / 2, -image.getHeight() / 2); // Draw the image centered at the translated
+        gc.restore(); // Restore the last saved state
     }
 
     public Rectangle2D getBoundary()
