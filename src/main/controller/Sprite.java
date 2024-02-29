@@ -8,9 +8,6 @@ public class Sprite
 {
     private Image image;
     //array che prevede più immagini sprite per simulare il movimento
-    private Image[] multipleImage;
-    private boolean movimentoImage=false;
-    private int numImmagine;
     private boolean termina=false;
     private double positionX;
     private double positionY;    
@@ -18,6 +15,14 @@ public class Sprite
     private double velocityY;
     private double width;
     private double height;
+    private int difficolta;
+    private int difficoltaBomba;
+
+
+    // Attributi per la gestione del movimento
+    private double gravity = 9.81;
+    private double velocitaIniziale;
+    private double tempoIniziale;
 
     public Sprite(){
         positionX = 0;
@@ -26,6 +31,14 @@ public class Sprite
         velocityY = 0;
     }
 
+    public void setVelocitaIniziale(double velocitaIniziale) {
+        this.velocitaIniziale = velocitaIniziale;
+    }
+
+    public void setTempoIniziale(double tempoIniziale) {
+        this.tempoIniziale = tempoIniziale;
+    }
+    
     public double getPositionX() {
         return positionX;
     }
@@ -43,15 +56,7 @@ public class Sprite
         image = i;
         width = i.getWidth();
         height = i.getHeight();
-    }
-
-    public void setMultipleImage(Image[] multipleImage) {
-        this.multipleImage = multipleImage;
-        movimentoImage=true;
-        numImmagine=0;
-        image=multipleImage[0];
-    }
-    
+    }   
 
     public void setImage(String filename)
     {
@@ -68,8 +73,9 @@ public class Sprite
     public void setVelocity(double x, double y)
     {
         velocityX = x;
-        velocityY = y;
+        velocityY = velocitaIniziale;
     }
+
 
     public void addVelocity(double x, double y)
     {
@@ -78,17 +84,18 @@ public class Sprite
     }
 
     public void update(double time)
-    {
+    {   
         positionX += velocityX * time;
-        positionY += velocityY * time;
-        if(movimentoImage){
-            numImmagine++;
-            if(numImmagine>=multipleImage.length){
-                numImmagine=0;
-                termina=true;
-            }
-            image=multipleImage[numImmagine];
-        }
+        double tempoTrascorso = (System.currentTimeMillis() - tempoIniziale) / 1000.0;
+        positionY += calcoloPosLancioY(tempoTrascorso);
+    }
+
+    public double calcoloPosLancioY(double time){
+        // calcolo la posizione Y
+        double altezza = velocitaIniziale * time + 0.5 * gravity * time * time;
+        //System.out.println(" Altezza: " + altezza);
+        // Stampa il tempo
+        return altezza;
     }
 
     public void render(GraphicsContext gc)
@@ -116,5 +123,46 @@ public class Sprite
     {
         return " Position: [" + positionX + "," + positionY + "]" 
         + " Velocity: [" + velocityX + "," + velocityY + "]";
+    }
+
+    public void setImageRandom() {
+
+        difficolta = 70; // 70% di probabilità di uscita di un frutto
+        difficoltaBomba = 80; // 80% di probabilità di uscita di una bomba non fatale
+
+        int j = (int) (Math.random() * 100);
+        if(j<difficolta){
+                int i = (int) (Math.random() * 5);
+                switch (i) {
+                    case 0:
+                        setImage("main/images/apple.png");
+                        break;
+                    case 1:
+                        setImage("main/images/kiwi.png");
+                        break;
+                    case 2:
+                        setImage("main/images/lemon.png");
+                        break;
+                    case 3:
+                        setImage("main/images/orange.png");
+                        break;
+                    case 4:
+                        setImage("main/images/pear.png");
+                        break;
+                    case 5:
+                        setImage("main/images/pom.png");
+                        break;
+                    }
+        }
+        else{
+                int k = (int) (Math.random() * 100);
+                if (k>difficoltaBomba) {
+                    setImage("main/images/bombFatal.png");
+                }else{
+                    setImage("main/images/bombTime.png");
+                }       
+              
+        }
+
     }
 }
