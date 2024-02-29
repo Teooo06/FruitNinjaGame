@@ -9,12 +9,15 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import main.controller.Sprite;
 
 public class MainApp extends Application {
     private int dimX = 1000;
     private int dimY = 600;
+    private int difficolta = 200;
+    private int punteggio = 0;
 
     private GraphicsContext gc;
 
@@ -26,7 +29,6 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(MainApp.class.getResource("guiFolder/mainGui.fxml"));
 
-       
         Canvas canvas = new Canvas(dimX, dimY);
         
         //Group root = new Group(canvas,pane);
@@ -35,14 +37,9 @@ public class MainApp extends Application {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
  
-       
-
         gc = canvas.getGraphicsContext2D();
 
         primaryStage.show();
-
-
-
 
         // Imposto lo sfondo
         Sprite sfondo = new Sprite();
@@ -50,17 +47,11 @@ public class MainApp extends Application {
         sfondo.setPosition(0, 0);
         sfondo.setVelocity(0, 0);
 
-        // Mela
-        Sprite mela = new Sprite();
-        mela.setImage("main/images/apple.png");
-        mela.setPosition(300, dimY+100);
-        mela.setVelocity(100, 0);
-        mela.setVelocitaIniziale(-9); // Range da -12 a -9.5
-
-
         // Crea un arraylist per gestire i frutti
         ArrayList<Sprite> elencoFrutta = new ArrayList<Sprite>();
 
+        // Controllo del tempo
+        double tempoIniziale = System.currentTimeMillis();
 
         // nuova animazione
         new AnimationTimer() {
@@ -72,38 +63,74 @@ public class MainApp extends Application {
                 
                 gc.clearRect(0, 0, dimX, dimY);
                 sfondo.render(gc);
-                
-                
+
                 // controllo generatore Frutti
-                int genera = (int) (Math.random() * 50);
+                int genera = (int) (Math.random() * difficolta);
                 
                 if (genera == 3) {
                     double tempoIniziale = System.currentTimeMillis();
+
                     Sprite frutto = new Sprite();
+
                     frutto.setTempoIniziale(tempoIniziale);
                     frutto.setImageRandom();
-                    double px = dimX * Math.random()+50;
+                    // Posizione iniziale
+                    // Da 20 a dimx - 20
+                    double px = 50 + (int) (Math.random() * (dimX - 50));
                     double py = dimY +100;
                     frutto.setPosition(px, py);
-                    // Può andare a destra o a sinistra
-                    int i= (int) (Math.random() * 2);
-                    if(i==0)
-                    frutto.setVelocity(-Math.random()*100, 0);
-                    else
-                    frutto.setVelocity(Math.random()*100, 0);
-                    double velocitaIniziale = -9.5 + (int) (Math.random() * -2.5);
+                    // Se la posizione iniziale è a sinistra, la velocità è positiva
+                    // Se la posizione iniziale è a destra, la velocità è negativa
+                    if (px < dimX / 2) {
+                        frutto.setVelocity(100, 0);
+                    } else {
+                        frutto.setVelocity(-100, 0);
+                    }
+                    double velocitaIniziale = -10 + (int) (Math.random() * -2.5);
                     frutto.setVelocitaIniziale(velocitaIniziale); // Range da -12 a -9.5
+
+                    // Imposto la rotazione
+                    frutto.setRotationAngle((int) (Math.random() * 300)+200);
+
                     elencoFrutta.add(frutto);
                 }
                 
-                //double tempoTrascorso = (System.currentTimeMillis() - tempoIniziale) / 1000.0;
-
-
                 // movimento frutto
                 for (Sprite frutto : elencoFrutta) {
                     frutto.update(elapsedTime);
                     frutto.render(gc);
                 }
+                
+                // Controllo e cancello i frutti sotto 200 px dallo schermo
+                for (int i = 0; i < elencoFrutta.size(); i++) {
+                    if (elencoFrutta.get(i).getPositionY() > dimY + 200) {
+                        elencoFrutta.remove(i);
+                    }
+                }
+                // Calcolo del tempo trascorso
+                // Calcolo del tempo trascorso
+                double tempoDouble = (System.currentTimeMillis() - tempoIniziale) / 1000.0;
+                String tempoFormattato = String.format("%.1f", tempoDouble);
+                tempoFormattato = tempoFormattato.replace(',', '.'); // Sostituisci la virgola con un punto
+
+                float tempoTrascorso = Float.parseFloat(tempoFormattato);
+
+                // Ogni n secondi aumento la difficoltà e aumento i secondi per aumentare la difficoltà di 40
+                if (tempoTrascorso % 60 == 0) { // Ogni minuto (60 secondi)
+                    if (difficolta > 30)
+                        difficolta -= 5 ;
+                }
+
+                // Disegno del testo sul canvas
+                gc.setFill(Color.WHITE);
+                gc.setFont(javafx.scene.text.Font.font(32)); // Impostazione della dimensione del font
+                // Nome del font in base alla difficoltà
+                if (difficolta > 120)
+                    gc.fillText("Difficoltà Facile", dimX /2 -100, 50); // Testo riempito
+                else if (difficolta > 60 && difficolta <= 120)
+                    gc.fillText("Difficoltà Media", dimX /2 -100, 50); // Testo riempito
+                else
+                    gc.fillText("Difficoltà Difficile", dimX /2 -100, 50); // Testo riempito
             }
         }.start();
 
