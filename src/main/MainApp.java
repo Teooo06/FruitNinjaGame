@@ -124,11 +124,9 @@ public class MainApp extends Application {
 
                 // Controllo se il mouse è sopra il pulsante
                 scene.setOnMouseClicked(e -> {
-                    System.out.println(gameStarted + "ciao");
                     double x = e.getSceneX();
                     double y = e.getSceneY();
                     if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211 && !gameStarted){
-                        System.out.println(gameStarted);
                         startGame();
                     }
                 });
