@@ -249,7 +249,6 @@ public class MainApp extends Application {
                     gc.fillText("Difficoltà Difficile", dimX /2 -100, 50); // Testo riempito
             }
         }.start();
-
     }
 
     public static void main(String[] args) {
