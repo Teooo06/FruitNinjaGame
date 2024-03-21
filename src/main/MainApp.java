@@ -49,14 +49,14 @@ public class MainApp extends Application {
 
         primaryStage.show();
 
-        mainMenu();
+        mainMenu(scene);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-     private Font loadFont(String path, double size) {
+    private Font loadFont(String path, double size) {
         try {
             return Font.loadFont(new FileInputStream(new File(path)), size);
         } catch (FileNotFoundException e) {
@@ -71,7 +71,7 @@ public class MainApp extends Application {
         gc.fillText(text, x, y); // Testo riempito
     }
 
-    public void mainMenu(){
+    public void mainMenu(Scene scene){
         // Imposto lo sfondo
         Sprite sfondo = new Sprite();
         sfondo.setImage("main/images/mainmenu.png");
@@ -79,24 +79,25 @@ public class MainApp extends Application {
         sfondo.setVelocity(0, 0);
 
         sfondo.render(gc);
+
+        // Dimensioni immagine + grande:  255 × 261 px (posizione dimX/2 - 100, dimY/2 - 50)
         
-        // Creo uno sprite che sarà il bottone di gioco
+        // Creo uno sprite che sarà il bottone di gioco (due bottoni uno dentro l'altro per l'effetto 3D)
         Sprite playButton = new Sprite();
         playButton.setImage("main/images/classic.png");
         playButton.setPosition(dimX / 2 - 100, dimY / 2 - 50);
         playButton.setVelocity(0, 0);
+        playButton.setRotationAngle(-80);
         playButton.render(gc);
 
         Sprite playButton2 = new Sprite();
         playButton2.setImage("main/images/watermelonMIN3.png");
         playButton2.setPosition(dimX / 2 - 35, dimY / 2 +15);
         playButton2.setVelocity(0, 0);
+        playButton2.setRotationAngle(80);
         
         playButton2.render(gc);
 
-        
-        
-        
         // nuova animazione
         new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
@@ -104,13 +105,32 @@ public class MainApp extends Application {
             public void handle(long currentNanoTime) {
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
+
+                // Controllo se il mouse è sopra il pulsante
+                scene.setOnMouseMoved(e -> {
+                    double x = e.getSceneX();
+                    double y = e.getSceneY();
+                    if (x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211){ 
+                        // Imposto la rotazione a 0
+                        playButton.setRotationAngle(0);
+                    } else {
+                        // Imposto la rotazione
+                        playButton.setRotationAngle(-80);
+                    }
+                });
+
+                // Controllo se il mouse è sopra il pulsante
+                scene.setOnMouseClicked(e -> {
+                    double x = e.getSceneX();
+                    double y = e.getSceneY();
+                    if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211)
+                        startGame();
+                });
                 
                 gc.clearRect(0, 0, dimX, dimY);
                 sfondo.render(gc);
                 
                 // Imposto la rotazione
-                playButton2.setRotationAngle(80);
-                playButton.setRotationAngle(-80);
                 playButton.updateRotation(elapsedTime);
                 playButton2.updateRotation(elapsedTime);
                 playButton.render(gc);
@@ -130,11 +150,17 @@ public class MainApp extends Application {
 
         gc.clearRect(0, 0, dimX, dimY);
 
-        // Imposto lo sfondo
         Sprite sfondo = new Sprite();
-        sfondo.setImage("main/images/background.jpg");
+        Sprite vite = new Sprite();
+        // Imposto lo sfondo
+        sfondo.setImage("main/images/backgroundDIM.jpg");
         sfondo.setPosition(0, 0);
         sfondo.setVelocity(0, 0);
+
+        // Imposto lo sprite per le 3 vite
+        vite.setImage("main/images/lives3.png");
+        vite.setPosition(dimX - 130, 10);
+        vite.setVelocity(0, 0);
 
         // Crea un arraylist per gestire i frutti
         ArrayList<Sprite> elencoFrutta = new ArrayList<Sprite>();
@@ -152,6 +178,7 @@ public class MainApp extends Application {
                 
                 gc.clearRect(0, 0, dimX, dimY);
                 sfondo.render(gc);
+                vite.render(gc);
 
                 // controllo generatore Frutti
                 int genera = (int) (Math.random() * difficolta);
@@ -164,9 +191,9 @@ public class MainApp extends Application {
                     frutto.setTempoIniziale(tempoIniziale);
                     frutto.setImageRandom();
                     // Posizione iniziale
-                    // Da 20 a dimx - 20
+                    // Da 50 a dimX - 50
                     double px = 50 + (int) (Math.random() * (dimX - 50));
-                    double py = dimY +100;
+                    double py = dimY + 100;
                     frutto.setPosition(px, py);
                     // Se la posizione iniziale è a sinistra, la velocità è positiva
                     // Se la posizione iniziale è a destra, la velocità è negativa
@@ -175,11 +202,11 @@ public class MainApp extends Application {
                     } else {
                         frutto.setVelocity(-100, 0);
                     }
-                    double velocitaIniziale = -10 + (int) (Math.random() * -2.5);
-                    frutto.setVelocitaIniziale(velocitaIniziale); // Range da -12 a -9.5
+                    double velocitaIniziale = -3.6 + (int) (Math.random() * 0.7);
+                    frutto.setVelocitaIniziale(velocitaIniziale); // Range da -3.6 a -2.9
 
-                    // Imposto la rotazione
-                    frutto.setRotationAngle((int) (Math.random() * 300)+200);
+                    // Imposto la rotazione da -400 a 400
+                    frutto.setRotationAngle(-400 + (int) (Math.random() * 800));
 
                     elencoFrutta.add(frutto);
                 }
