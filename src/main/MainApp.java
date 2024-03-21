@@ -1,5 +1,8 @@
 package main;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -10,14 +13,15 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import main.controller.Sprite;
+import javafx.scene.text.Font;
 
 public class MainApp extends Application {
     private int dimX = 1000;
     private int dimY = 600;
     private int difficolta = 200;
-    private int punteggio = 0;
 
     private GraphicsContext gc;
 
@@ -27,19 +31,104 @@ public class MainApp extends Application {
         primaryStage.setTitle("Fruit Ninja Game - Progetto di TPS - 2024 - Bertoldini Bonanomi");
 
         FXMLLoader loader = new FXMLLoader();
+        
         loader.setLocation(MainApp.class.getResource("guiFolder/mainGui.fxml"));
-
+        Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
+        
         Canvas canvas = new Canvas(dimX, dimY);
         
         //Group root = new Group(canvas,pane);
         Group root = new Group(canvas);
-
+        
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
- 
+        
         gc = canvas.getGraphicsContext2D();
+        
+        gc.setFont(customFont);
 
         primaryStage.show();
+
+        mainMenu();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+     private Font loadFont(String path, double size) {
+        try {
+            return Font.loadFont(new FileInputStream(new File(path)), size);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            // Gestione dell'eccezione
+            return Font.getDefault(); // Ritorna un font predefinito in caso di errore
+        }
+    }
+
+    private void drawText(String text, double x, double y, Paint color) {
+        gc.setFill(color); 
+        gc.fillText(text, x, y); // Testo riempito
+    }
+
+    public void mainMenu(){
+        // Imposto lo sfondo
+        Sprite sfondo = new Sprite();
+        sfondo.setImage("main/images/mainmenu.png");
+        sfondo.setPosition(-2, 0);
+        sfondo.setVelocity(0, 0);
+
+        sfondo.render(gc);
+        
+        // Creo uno sprite che sarà il bottone di gioco
+        Sprite playButton = new Sprite();
+        playButton.setImage("main/images/classic.png");
+        playButton.setPosition(dimX / 2 - 100, dimY / 2 - 50);
+        playButton.setVelocity(0, 0);
+        playButton.render(gc);
+
+        Sprite playButton2 = new Sprite();
+        playButton2.setImage("main/images/watermelonMIN3.png");
+        playButton2.setPosition(dimX / 2 - 35, dimY / 2 +15);
+        playButton2.setVelocity(0, 0);
+        
+        playButton2.render(gc);
+
+        
+        
+        
+        // nuova animazione
+        new AnimationTimer() {
+            double lastNanoTime = System.nanoTime();
+            
+            public void handle(long currentNanoTime) {
+                double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
+                lastNanoTime = currentNanoTime;
+                
+                gc.clearRect(0, 0, dimX, dimY);
+                sfondo.render(gc);
+                
+                // Imposto la rotazione
+                playButton2.setRotationAngle(80);
+                playButton.setRotationAngle(-80);
+                playButton.updateRotation(elapsedTime);
+                playButton2.updateRotation(elapsedTime);
+                playButton.render(gc);
+                playButton2.render(gc); 
+                
+                drawText("Best \nScore:",dimX/2+ 250, dimY/2 + 50, Color.WHITE);
+                drawText("1200",dimX/2+ 250, dimY/2 + 200, Color.WHITE);
+                
+            }
+        }.start();
+
+        
+    }
+
+
+    public void startGame() {
+
+        gc.clearRect(0, 0, dimX, dimY);
 
         // Imposto lo sfondo
         Sprite sfondo = new Sprite();
@@ -134,9 +223,6 @@ public class MainApp extends Application {
             }
         }.start();
 
-        } catch (Exception e) {
-        e.printStackTrace();
-    }
     }
 
     public static void main(String[] args) {

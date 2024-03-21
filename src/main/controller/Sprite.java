@@ -97,6 +97,11 @@ public class Sprite
         rotate += rotationAngle * time;
     }
 
+    public void updateRotation(double time)
+    {
+        rotate += rotationAngle * time;
+    }
+
     public double calcoloPosLancioY(double time){
         // calcolo la posizione Y
         double altezza = velocitaIniziale * time + 0.5 * gravity * time * time;
