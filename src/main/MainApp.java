@@ -22,6 +22,10 @@ public class MainApp extends Application {
     private int dimX = 1000;
     private int dimY = 600;
     private int difficolta = 200;
+    private boolean gameStarted = false;
+    private int score = 0;
+    Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
+    Font customFont2 = loadFont("src/main/fonts/go3v2.ttf", 30);
 
     private GraphicsContext gc;
 
@@ -33,7 +37,6 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader();
         
         loader.setLocation(MainApp.class.getResource("guiFolder/mainGui.fxml"));
-        Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
         
         Canvas canvas = new Canvas(dimX, dimY);
         
@@ -121,10 +124,21 @@ public class MainApp extends Application {
 
                 // Controllo se il mouse è sopra il pulsante
                 scene.setOnMouseClicked(e -> {
+                    System.out.println(gameStarted + "ciao");
                     double x = e.getSceneX();
                     double y = e.getSceneY();
-                    if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211)
+                    if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211 && !gameStarted){
+                        System.out.println(gameStarted);
                         startGame();
+                    }
+                });
+                
+
+                // Se schiaccio "P" inizia il gioco
+                scene.setOnKeyPressed(e -> {
+                    if (e.getText().equals("p") && !gameStarted) {
+                        startGame();
+                    }
                 });
                 
                 gc.clearRect(0, 0, dimX, dimY);
@@ -147,6 +161,7 @@ public class MainApp extends Application {
 
 
     public void startGame() {
+        gameStarted = true;
 
         gc.clearRect(0, 0, dimX, dimY);
 
@@ -178,16 +193,15 @@ public class MainApp extends Application {
                 
                 gc.clearRect(0, 0, dimX, dimY);
                 sfondo.render(gc);
-                vite.render(gc);
-
+                
                 // controllo generatore Frutti
                 int genera = (int) (Math.random() * difficolta);
                 
                 if (genera == 3) {
                     double tempoIniziale = System.currentTimeMillis();
-
+                    
                     Sprite frutto = new Sprite();
-
+                    
                     frutto.setTempoIniziale(tempoIniziale);
                     frutto.setImageRandom();
                     // Posizione iniziale
@@ -204,10 +218,10 @@ public class MainApp extends Application {
                     }
                     double velocitaIniziale = -3.6 + (int) (Math.random() * 0.7);
                     frutto.setVelocitaIniziale(velocitaIniziale); // Range da -3.6 a -2.9
-
+                    
                     // Imposto la rotazione da -400 a 400
                     frutto.setRotationAngle(-400 + (int) (Math.random() * 800));
-
+                    
                     elencoFrutta.add(frutto);
                 }
                 
@@ -228,25 +242,31 @@ public class MainApp extends Application {
                 double tempoDouble = (System.currentTimeMillis() - tempoIniziale) / 1000.0;
                 String tempoFormattato = String.format("%.1f", tempoDouble);
                 tempoFormattato = tempoFormattato.replace(',', '.'); // Sostituisci la virgola con un punto
-
+                
                 float tempoTrascorso = Float.parseFloat(tempoFormattato);
-
+                
                 // Ogni n secondi aumento la difficoltà e aumento i secondi per aumentare la difficoltà di 40
                 if (tempoTrascorso % 60 == 0) { // Ogni minuto (60 secondi)
                     if (difficolta > 30)
-                        difficolta -= 5 ;
+                    difficolta -= 5 ;
                 }
-
-                // Disegno del testo sul canvas
-                gc.setFill(Color.WHITE);
-                gc.setFont(javafx.scene.text.Font.font(32)); // Impostazione della dimensione del font
+                
+                // Imposto x e y per il testo
+                int x = dimX/2 - 200;
+                int y = dimY - 10;
+                gc.setFont(customFont);
                 // Nome del font in base alla difficoltà
                 if (difficolta > 120)
-                    gc.fillText("Difficoltà Facile", dimX /2 -100, 50); // Testo riempito
+                drawText("Difficoltà Facile", x, y, Color.WHITE); // Testo riempito
                 else if (difficolta > 60 && difficolta <= 120)
-                    gc.fillText("Difficoltà Media", dimX /2 -100, 50); // Testo riempito
+                drawText("Difficoltà Media", x, y, Color.WHITE); // Testo riempito
                 else
-                    gc.fillText("Difficoltà Difficile", dimX /2 -100, 50); // Testo riempito
+                drawText("Difficoltà Difficile", x, y, Color.WHITE); // Testo riempito
+                
+                // Mostro il punteggio
+                gc.setFont(customFont2);
+                drawText( "Score: " + score, 30, 50, Color.WHITE); // Testo riempito
+                vite.render(gc);
             }
         }.start();
     }
