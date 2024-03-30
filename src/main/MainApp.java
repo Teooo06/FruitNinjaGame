@@ -127,7 +127,7 @@ public class MainApp extends Application {
                     double x = e.getSceneX();
                     double y = e.getSceneY();
                     if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211 && !gameStarted){
-                        startGame();
+                        startGame(scene);
                     }
                 });
                 
@@ -135,7 +135,7 @@ public class MainApp extends Application {
                 // Se schiaccio "P" inizia il gioco
                 scene.setOnKeyPressed(e -> {
                     if (e.getText().equals("p") && !gameStarted) {
-                        startGame();
+                        startGame(scene);
                     }
                 });
                 
@@ -158,34 +158,43 @@ public class MainApp extends Application {
     }
 
 
-    public void startGame() {
+    public void startGame(Scene scene) {
+
         gameStarted = true;
-
+        
         gc.clearRect(0, 0, dimX, dimY);
-
+        
         Sprite sfondo = new Sprite();
         Sprite vite = new Sprite();
         // Imposto lo sfondo
         sfondo.setImage("main/images/backgroundDIM.jpg");
         sfondo.setPosition(0, 0);
         sfondo.setVelocity(0, 0);
-
+        
         // Imposto lo sprite per le 3 vite
         vite.setImage("main/images/lives3.png");
         vite.setPosition(dimX - 130, 10);
         vite.setVelocity(0, 0);
-
+        
         // Crea un arraylist per gestire i frutti
         ArrayList<Sprite> elencoFrutta = new ArrayList<Sprite>();
-
+        
         // Controllo del tempo
         double tempoIniziale = System.currentTimeMillis();
-
+        
         // nuova animazione
         new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
             
             public void handle(long currentNanoTime) {
+
+                // Stampo la posizione del mouse
+                scene.setOnMouseMoved(e -> {
+                    double x = e.getSceneX();
+                    double y = e.getSceneY();
+                    System.out.println("X: " + x + " Y: " + y);
+                });
+
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
                 
@@ -265,6 +274,7 @@ public class MainApp extends Application {
                 gc.setFont(customFont2);
                 drawText( "Score: " + score, 30, 50, Color.WHITE); // Testo riempito
                 vite.render(gc);
+                
             }
         }.start();
     }
