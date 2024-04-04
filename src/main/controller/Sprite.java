@@ -8,6 +8,7 @@ public class Sprite {
     private Image image;
     // array che prevede più immagini sprite per simulare il movimento
     private boolean termina = false;
+    private boolean tagliato = false;
     private double positionX;
     private double positionY;
     private double velocityX;
@@ -169,6 +170,17 @@ public class Sprite {
     }
 
     public void setOnMouseClicked(javafx.event.EventHandler<? super javafx.scene.input.MouseEvent> value) {
+    }
 
+    public int tagliato( int punteggio) {
+        // Cambia immagine in immagine tagliata
+        setImage("main/images/appleSplit.png");
+        if (tagliato==false) {
+            // Aggiunge 10 punti
+            punteggio += 10;
+            tagliato = true;
+        }
+        termina = true;
+        return punteggio;
     }
 }
