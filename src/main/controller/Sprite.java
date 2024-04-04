@@ -1,7 +1,6 @@
 package main.controller;
 
 import javafx.scene.image.Image;
-import main.MainApp;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Rectangle2D;
 
@@ -208,7 +207,7 @@ public class Sprite {
             punteggio += 10;
             tagliato = true;
             // Cambia immagine in immagine tagliata
-            String nome = "main/images/" + tipoSprite + "Split.png";
+            String nome = "main/images/" + tipoSprite + "SplitMedium.png";
             setImage(nome);
         }
         termina = true;
