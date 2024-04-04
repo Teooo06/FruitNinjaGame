@@ -1,6 +1,7 @@
 package main.controller;
 
 import javafx.scene.image.Image;
+import main.MainApp;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Rectangle2D;
 
@@ -197,6 +198,11 @@ public class Sprite {
                 tagliato = true;
 
                 //TODO: aggiungere funzionlità vite
+                // deve modificare il numero di vite nella mainApp
+                if (MainApp.contaVite > 0) {
+                    MainApp.contaVite--;
+                }
+
             }
             termina = true;
             return punteggio;

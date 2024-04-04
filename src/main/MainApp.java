@@ -24,7 +24,7 @@ public class MainApp extends Application {
     private int difficolta = 200;
     private boolean gameStarted = false;
     private int score = 0;
-    public int contaVite = 3;
+    public static int contaVite = 3;
     Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
     Font customFont2 = loadFont("src/main/fonts/go3v2.ttf", 30);
 
@@ -188,7 +188,6 @@ public class MainApp extends Application {
             double lastNanoTime = System.nanoTime();
             
             public void handle(long currentNanoTime) {
-
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
                 
@@ -262,6 +261,7 @@ public class MainApp extends Application {
                 if (tempoTrascorso % 60 == 0) { // Ogni minuto (60 secondi)
                     if (difficolta > 30)
                     difficolta -= 5 ;
+                    System.out.println("Difficoltà: " + difficolta);
                 }
                 
                 // Imposto x e y per il testo
@@ -282,6 +282,29 @@ public class MainApp extends Application {
 
                 vite.setImage("main/images/lives" + contaVite + ".png");
                 vite.render(gc);
+
+                // Controllo se il gioco è finito
+                if (contaVite == 0) {
+                    // Blocchiamo il gioco
+                    gameStarted = false;
+                    gc.setFont(customFont);
+                    // Metto uno sfondo foto
+                    Sprite gameOver = new Sprite();
+                    gameOver.setImage("main/images/gameOver.png");
+                    gameOver.render(gc);
+                    drawText("Score: " + score, dimX / 2 - 200, dimY / 2 + 100, Color.RED);
+                    drawText("Premi 'P' per tornare al menu", dimX / 2 - 400, dimY / 2 + 200, Color.RED);
+                    // Se schiaccio "P" inizia il gioco
+                    scene.setOnKeyPressed(e -> {
+                        if (e.getText().equals("p") && !gameStarted) {
+                            contaVite = 3;
+                            score = 0;
+                            // Resetto la difficoltà
+                            difficolta = 200;
+                            mainMenu(scene);
+                        }
+                    });
+                }
                 
             }
         }.start();
