@@ -1,6 +1,7 @@
 package main.controller;
 
 import javafx.scene.image.Image;
+import main.MainApp;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Rectangle2D;
 
@@ -9,6 +10,7 @@ public class Sprite {
     // array che prevede più immagini sprite per simulare il movimento
     private boolean termina = false;
     private boolean tagliato = false;
+    private String tipoSprite;
     private double positionX;
     private double positionY;
     private double velocityX;
@@ -140,29 +142,37 @@ public class Sprite {
             switch (i) {
                 case 0:
                     setImage("main/images/appleMedium.png");
+                    tipoSprite = "apple";
                     break;
                 case 1:
                     setImage("main/images/kiwiMedium.png");
+                    tipoSprite = "kiwi";
                     break;
                 case 2:
                     setImage("main/images/lemonMedium.png");
+                    tipoSprite = "lemon";
                     break;
                 case 3:
                     setImage("main/images/orangeMedium.png");
+                    tipoSprite = "orange";
                     break;
                 case 4:
                     setImage("main/images/pearMedium.png");
+                    tipoSprite = "pear";
                     break;
                 case 5:
                     setImage("main/images/pomMedium.png");
+                    tipoSprite = "pom";
                     break;
             }
         } else {
             int k = (int) (Math.random() * 100);
             if (k > difficoltaBomba) {
                 setImage("main/images/bombFatalMedium.png");
+                tipoSprite = "bombFatal";
             } else {
                 setImage("main/images/bombTimeMedium.png");
+                tipoSprite = "bombTime";
             }
 
         }
@@ -172,13 +182,34 @@ public class Sprite {
     public void setOnMouseClicked(javafx.event.EventHandler<? super javafx.scene.input.MouseEvent> value) {
     }
 
-    public int tagliato( int punteggio) {
+    public int tagliato(int punteggio) {
+
+        // Se il frutto è una bomba
+        if (tipoSprite.equals("bombFatal") || tipoSprite.equals("bombTime")){
+            // Cambia immagine in immagine tagliata
+            //setImage("main/images/bombCut.png");
+            if (tagliato==false) {
+                // Sottrae 50 punti se ce ne sono
+                if (punteggio >= 50) {
+                    punteggio -= 50;
+                } else {
+                    punteggio = 0;
+                }
+                tagliato = true;
+
+                //TODO: aggiungere funzionlità vite
+            }
+            termina = true;
+            return punteggio;
+        }
         // Cambia immagine in immagine tagliata
-        setImage("main/images/appleSplit.png");
         if (tagliato==false) {
             // Aggiunge 10 punti
             punteggio += 10;
             tagliato = true;
+            // Cambia immagine in immagine tagliata
+            String nome = "main/images/" + tipoSprite + "Split.png";
+            setImage(nome);
         }
         termina = true;
         return punteggio;
