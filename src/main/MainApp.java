@@ -188,13 +188,6 @@ public class MainApp extends Application {
             
             public void handle(long currentNanoTime) {
 
-                // Stampo la posizione del mouse
-                scene.setOnMouseMoved(e -> {
-                    double x = e.getSceneX();
-                    double y = e.getSceneY();
-                    System.out.println("X: " + x + " Y: " + y);
-                });
-
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
                 
@@ -244,6 +237,18 @@ public class MainApp extends Application {
                         elencoFrutta.remove(i);
                     }
                 }
+
+                // Controllo se il mouse è sopra un frutto metre è premuto
+                scene.setOnMouseDragged(e->{
+                            double x = e.getSceneX();
+                            double y = e.getSceneY();
+                            for (int i = 0; i < elencoFrutta.size(); i++) {
+                                if (elencoFrutta.get(i).intersects(x, y)) {
+                                    score = elencoFrutta.get(i).tagliato(score);
+                                }
+                            }
+                });
+
                 // Calcolo del tempo trascorso
                 // Calcolo del tempo trascorso
                 double tempoDouble = (System.currentTimeMillis() - tempoIniziale) / 1000.0;
