@@ -24,6 +24,7 @@ public class MainApp extends Application {
     private int difficolta = 200;
     private boolean gameStarted = false;
     private int score = 0;
+    public int contaVite = 3;
     Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
     Font customFont2 = loadFont("src/main/fonts/go3v2.ttf", 30);
 
@@ -278,6 +279,8 @@ public class MainApp extends Application {
                 // Mostro il punteggio
                 gc.setFont(customFont2);
                 drawText( "Score: " + score, 30, 50, Color.WHITE); // Testo riempito
+
+                vite.setImage("main/images/lives" + contaVite + ".png");
                 vite.render(gc);
                 
             }
