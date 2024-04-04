@@ -137,7 +137,7 @@ public class Sprite {
 
         int j = (int) (Math.random() * 100);
         if (j < difficolta) {
-            int i = (int) (Math.random() * 5);
+            int i = (int) (Math.random() * 6); // da 0 a 5
             switch (i) {
                 case 0:
                     setImage("main/images/appleMedium.png");
