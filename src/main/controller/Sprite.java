@@ -10,6 +10,7 @@ public class Sprite {
     // array che prevede più immagini sprite per simulare il movimento
     private boolean termina = false;
     private boolean tagliato = false;
+    private boolean bomba = false;
     private String tipoSprite;
     private double positionX;
     private double positionY;
@@ -170,9 +171,11 @@ public class Sprite {
             if (k > difficoltaBomba) {
                 setImage("main/images/bombFatalMedium.png");
                 tipoSprite = "bombFatal";
+                bomba = true;
             } else {
                 setImage("main/images/bombTimeMedium.png");
                 tipoSprite = "bombTime";
+                bomba = true;
             }
 
         }
@@ -218,5 +221,15 @@ public class Sprite {
         }
         termina = true;
         return punteggio;
+    }
+
+    // Metodo is tagliato
+    public boolean isTagliato() {
+        return tagliato;
+    }
+    
+    // Metodo is bomba
+    public boolean isBomba() {
+        return bomba;
     }
 }

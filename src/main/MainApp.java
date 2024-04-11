@@ -234,6 +234,12 @@ public class MainApp extends Application {
                 // Controllo e cancello i frutti sotto 200 px dallo schermo
                 for (int i = 0; i < elencoFrutta.size(); i++) {
                     if (elencoFrutta.get(i).getPositionY() > dimY + 200) {
+                        // Controllo se il frutto non è stato tagliato e se non è una bomba tolgo una vita
+                        if (!elencoFrutta.get(i).isTagliato() && !elencoFrutta.get(i).isBomba()) {
+                            if (MainApp.contaVite > 0) {
+                                contaVite--;
+                            }
+                        }
                         elencoFrutta.remove(i);
                     }
                 }
