@@ -34,6 +34,7 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         try {
         primaryStage.setTitle("Fruit Ninja Game - Progetto di TPS - 2024 - Bertoldini Bonanomi");
+        primaryStage.setResizable(false);
 
         FXMLLoader loader = new FXMLLoader();
         
@@ -109,8 +110,8 @@ public class MainApp extends Application {
         infoButton.render(gc);
 
         Sprite infoButton2 = new Sprite();
-        infoButton2.setImage("main/images/orangeBig.png");
-        infoButton2.setPosition(110, dimY / 2 + 82);
+        infoButton2.setImage("main/images/orangeMedium.png");
+        infoButton2.setPosition(125, dimY / 2 + 95);
         infoButton2.setVelocity(0, 0);
         infoButton2.setRotationAngle(-80);
         infoButton2.render(gc);
@@ -149,7 +150,12 @@ public class MainApp extends Application {
                     double x = e.getSceneX();
                     double y = e.getSceneY();
                     if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211 && !gameStarted){
+                        gc.clearRect(0, 0, dimX, dimY);
                         startGame(scene);
+                    }
+                    if( x >= 80 && x <= 280 && y >= dimY / 2 + 50 && y <= dimY / 2 + 250 && !gameStarted){
+                        gc.clearRect(0, 0, dimX, dimY);
+                        infoMenu(scene);
                     }
                 });
                 
@@ -184,6 +190,44 @@ public class MainApp extends Application {
     public void infoMenu(Scene scene){
         //TODO: Implementare il menu delle informazioni
         // Spiegare cosa valgono i vari frutti e le bombe
+        gc.clearRect(0, 0, dimX, dimY);
+
+        Sprite sfondo = new Sprite();
+        sfondo.setImage("main/images/infoMenuMedium.png");
+        sfondo.setPosition(0, 0);
+        sfondo.setVelocity(0, 0);
+        sfondo.render(gc);
+        
+        // Animazione loop
+        new AnimationTimer() {
+            double lastNanoTime = System.nanoTime();
+
+            public void handle(long currentNanoTime) {
+                gc.clearRect(0, 0, dimX, dimY);
+
+                // Disegna lo sfondo
+                sfondo.render(gc);
+
+                // Scritta
+                gc.setFont(customFont);
+                drawText("Info", dimX / 2 - 50, 50, Color.WHITE);
+                gc.setFont(customFont2);
+                drawText("Fruit Ninja è un gioco in cui bisogna tagliare i frutti \nma non le bombe.", 50, 100,
+                        Color.WHITE);
+                drawText("Ogni frutto tagliato vale 10 punti, ogni bomba tagliata \ntoglie 100 punti.", 50, 200,
+                        Color.WHITE);
+                drawText("Il gioco finisce quando le vite sono 0.", 50, 300, Color.WHITE);
+                drawText("Premi 'P' per tornare al menu", 50, 400, Color.WHITE);
+
+                // Gestione input
+                scene.setOnKeyPressed(e -> {
+                    if (e.getText().equals("p")) {
+                        mainMenu(scene);
+                    }
+                });
+            }
+        }.start();
+
     }
 
 
