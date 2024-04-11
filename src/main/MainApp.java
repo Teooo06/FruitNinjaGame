@@ -99,8 +99,21 @@ public class MainApp extends Application {
         playButton2.setPosition(dimX / 2 - 35, dimY / 2 +15);
         playButton2.setVelocity(0, 0);
         playButton2.setRotationAngle(80);
-        
         playButton2.render(gc);
+
+        Sprite infoButton = new Sprite();
+        infoButton.setImage("main/images/info.png");
+        infoButton.setPosition(80, dimY / 2 + 50);
+        infoButton.setVelocity(0, 0);
+        infoButton.setRotationAngle(80);
+        infoButton.render(gc);
+
+        Sprite infoButton2 = new Sprite();
+        infoButton2.setImage("main/images/orangeMedium.png");
+        infoButton2.setPosition(125, dimY / 2 + 95);
+        infoButton2.setVelocity(0, 0);
+        infoButton2.setRotationAngle(-80);
+        infoButton2.render(gc);
 
         // nuova animazione
         new AnimationTimer() {
@@ -120,6 +133,14 @@ public class MainApp extends Application {
                     } else {
                         // Imposto la rotazione
                         playButton.setRotationAngle(-80);
+                    }
+                    // Info image è grande 200 200
+                    if (x >= 80 && x <= 280 && y >= dimY / 2 + 50 && y <= dimY / 2 + 250){ 
+                        // Imposto la rotazione a 0
+                        infoButton.setRotationAngle(0);
+                    } else {
+                        // Imposto la rotazione
+                        infoButton.setRotationAngle(80);
                     }
                 });
 
@@ -148,14 +169,21 @@ public class MainApp extends Application {
                 playButton2.updateRotation(elapsedTime);
                 playButton.render(gc);
                 playButton2.render(gc); 
+                infoButton.updateRotation(elapsedTime);
+                infoButton2.updateRotation(elapsedTime);
+                infoButton.render(gc);
+                infoButton2.render(gc);
                 
                 drawText("Best \nScore:",dimX/2+ 250, dimY/2 + 50, Color.WHITE);
                 drawText("1200",dimX/2+ 250, dimY/2 + 200, Color.WHITE);
                 
             }
         }.start();
+    }
 
-        
+    public void infoMenu(Scene scene){
+        //TODO: Implementare il menu delle informazioni
+        // Spiegare cosa valgono i vari frutti e le bombe
     }
 
 
