@@ -102,15 +102,15 @@ public class MainApp extends Application {
         playButton2.render(gc);
 
         Sprite infoButton = new Sprite();
-        infoButton.setImage("main/images/info.png");
+        infoButton.setImage("main/images/infoButton.png");
         infoButton.setPosition(80, dimY / 2 + 50);
         infoButton.setVelocity(0, 0);
         infoButton.setRotationAngle(80);
         infoButton.render(gc);
 
         Sprite infoButton2 = new Sprite();
-        infoButton2.setImage("main/images/orangeMedium.png");
-        infoButton2.setPosition(125, dimY / 2 + 95);
+        infoButton2.setImage("main/images/orangeBig.png");
+        infoButton2.setPosition(110, dimY / 2 + 82);
         infoButton2.setVelocity(0, 0);
         infoButton2.setRotationAngle(-80);
         infoButton2.render(gc);
