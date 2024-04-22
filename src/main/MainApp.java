@@ -17,6 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import main.controller.Sprite;
+import main.files.LeggiPunti;
+import main.files.ScriviPunti;
 import javafx.scene.text.Font;
 
 public class MainApp extends Application {
@@ -32,6 +34,11 @@ public class MainApp extends Application {
     private AnimationTimer gameTimer;
     private AnimationTimer gameOverTimer;
     private AnimationTimer infoMenuTimer;
+    
+    // Best score
+    private int BestScore = 0;
+    LeggiPunti leggiPunti = new LeggiPunti();
+    ScriviPunti scriviPunti = new ScriviPunti();
 
     private GraphicsContext gc;
 
@@ -58,6 +65,11 @@ public class MainApp extends Application {
         gc.setFont(customFont);
 
         primaryStage.show();
+
+        // Leggo il punteggio migliore
+        BestScore = leggiPunti.leggiPunti();
+        System.out.println("Best score: " + BestScore);
+
 
         mainMenu(scene);
 
@@ -193,7 +205,7 @@ public class MainApp extends Application {
                 infoButton2.render(gc);
                 
                 drawText("Best \nScore:",dimX/2+ 250, dimY/2 + 50, Color.WHITE);
-                drawText("1200",dimX/2+ 250, dimY/2 + 200, Color.WHITE);
+                drawText(String.valueOf(BestScore) ,dimX/2+ 250, dimY/2 + 200, Color.WHITE);
                 
             }
         };
@@ -390,6 +402,7 @@ public class MainApp extends Application {
                 // Mostro il punteggio
                 gc.setFont(customFont2);
                 drawText( "Score: " + score, 30, 50, Color.WHITE); // Testo riempito
+                
 
                 vite.setImage("main/images/lives" + contaVite + ".png");
                 vite.render(gc);
@@ -427,6 +440,12 @@ public class MainApp extends Application {
                 drawText(("Punteggio: "+score), dimX / 2 - 140, dimY -170, Color.RED);
                 gc.setFont(customFont2);
                 drawText("Premi il tasto 'P' per tornare al menu", dimX/2 -250, dimY -130, Color.RED);
+
+                // Se il punteggio è maggiore del best score lo salvo nel file
+                if (score > BestScore) {
+                    BestScore = score;
+                    scriviPunti.scriviUtenti(BestScore);
+                }
 
                 // Gestione input
                 scene.setOnKeyPressed(e -> {
