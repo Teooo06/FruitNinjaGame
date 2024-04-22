@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,10 @@ public class MainApp extends Application {
     public static int contaVite = 3;
     Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
     Font customFont2 = loadFont("src/main/fonts/go3v2.ttf", 30);
+    private AnimationTimer mainMenuTimer;
+    private AnimationTimer gameTimer;
+    private AnimationTimer gameOverTimer;
+    private AnimationTimer infoMenuTimer;
 
     private GraphicsContext gc;
 
@@ -77,6 +82,17 @@ public class MainApp extends Application {
     }
 
     public void mainMenu(Scene scene){
+        // Controllo se sono iniziati i timer e li fermo
+        if (mainMenuTimer != null) {
+            mainMenuTimer.stop();
+        }
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
+        if (gameOverTimer != null) {
+            gameOverTimer.stop();
+        }
+
         // Imposto lo sfondo
         Sprite sfondo = new Sprite();
         sfondo.setImage("main/images/mainmenu.png");
@@ -117,7 +133,7 @@ public class MainApp extends Application {
         infoButton2.render(gc);
 
         // nuova animazione
-        new AnimationTimer() {
+        mainMenuTimer = new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
             
             public void handle(long currentNanoTime) {
@@ -151,19 +167,15 @@ public class MainApp extends Application {
                     double y = e.getSceneY();
                     if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211 && !gameStarted){
                         gc.clearRect(0, 0, dimX, dimY);
+                        // Imposto le vite e il punteggio a 0 e difficolta a 200
+                        contaVite = 3;
+                        score = 0;
+                        difficolta = 200;
                         startGame(scene);
                     }
                     if( x >= 80 && x <= 280 && y >= dimY / 2 + 50 && y <= dimY / 2 + 250 && !gameStarted){
                         gc.clearRect(0, 0, dimX, dimY);
                         infoMenu(scene);
-                    }
-                });
-                
-
-                // Se schiaccio "P" inizia il gioco
-                scene.setOnKeyPressed(e -> {
-                    if (e.getText().equals("p") && !gameStarted) {
-                        startGame(scene);
                     }
                 });
                 
@@ -184,11 +196,14 @@ public class MainApp extends Application {
                 drawText("1200",dimX/2+ 250, dimY/2 + 200, Color.WHITE);
                 
             }
-        }.start();
+        };
+        mainMenuTimer.start();
     }
 
     public void infoMenu(Scene scene){
-        //TODO: Implementare il menu delle informazioni
+        if(mainMenuTimer != null){
+            mainMenuTimer.stop();
+        }
         // Spiegare cosa valgono i vari frutti e le bombe
         gc.clearRect(0, 0, dimX, dimY);
 
@@ -199,7 +214,7 @@ public class MainApp extends Application {
         sfondo.render(gc);
         
         // Animazione loop
-        new AnimationTimer() {
+        infoMenuTimer =new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
 
             public void handle(long currentNanoTime) {
@@ -213,12 +228,12 @@ public class MainApp extends Application {
                 drawText("Info", dimX / 2 - 50, 50, Color.WHITE);
                 gc.setFont(customFont2);
                 drawText("Fruit Ninja è un gioco in cui bisogna tagliare i frutti \nma non le bombe.", 50, 100,
-                        Color.WHITE);
+                Color.WHITE);
                 drawText("Ogni frutto tagliato vale 10 punti, ogni bomba tagliata \ntoglie 100 punti.", 50, 200,
-                        Color.WHITE);
+                Color.WHITE);
                 drawText("Il gioco finisce quando le vite sono 0.", 50, 300, Color.WHITE);
                 drawText("Premi 'P' per tornare al menu", 50, 400, Color.WHITE);
-
+                
                 // Gestione input
                 scene.setOnKeyPressed(e -> {
                     if (e.getText().equals("p")) {
@@ -226,13 +241,16 @@ public class MainApp extends Application {
                     }
                 });
             }
-        }.start();
-
+        };
+        infoMenuTimer.start();
+        
     }
-
-
+    
+    
     public void startGame(Scene scene) {
-
+        if (mainMenuTimer != null){
+            mainMenuTimer.stop();
+        }
         gameStarted = true;
         
         gc.clearRect(0, 0, dimX, dimY);
@@ -256,12 +274,27 @@ public class MainApp extends Application {
         double tempoIniziale = System.currentTimeMillis();
         
         // nuova animazione
-        new AnimationTimer() {
+        gameTimer = new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
             
             public void handle(long currentNanoTime) {
+                /*
+                // Se il gioco è in pausa non fare nulla
+                if (!gameStarted) {
+                    return;
+                } */
+                
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
+                // Controllo se il gioco è finito
+                if (contaVite == 0) {
+                    // Blocchiamo il gioco
+                    gameStarted = false;
+            
+                    // Mostro il game over
+                    gc.clearRect(0, 0, dimX, dimY);
+                    gameOver(scene);
+                }
                 
                 gc.clearRect(0, 0, dimX, dimY);
                 sfondo.render(gc);
@@ -305,6 +338,7 @@ public class MainApp extends Application {
                 
                 // Controllo e cancello i frutti sotto 200 px dallo schermo
                 for (int i = 0; i < elencoFrutta.size(); i++) {
+                    // Stampa frutti sotto ai 200 px
                     if (elencoFrutta.get(i).getPositionY() > dimY + 200) {
                         // Controllo se il frutto non è stato tagliato e se non è una bomba tolgo una vita
                         if (!elencoFrutta.get(i).isTagliato() && !elencoFrutta.get(i).isBomba()) {
@@ -328,7 +362,6 @@ public class MainApp extends Application {
                 });
 
                 // Calcolo del tempo trascorso
-                // Calcolo del tempo trascorso
                 double tempoDouble = (System.currentTimeMillis() - tempoIniziale) / 1000.0;
                 String tempoFormattato = String.format("%.1f", tempoDouble);
                 tempoFormattato = tempoFormattato.replace(',', '.'); // Sostituisci la virgola con un punto
@@ -339,7 +372,7 @@ public class MainApp extends Application {
                 if (tempoTrascorso % 60 == 0) { // Ogni minuto (60 secondi)
                     if (difficolta > 30)
                     difficolta -= 5 ;
-                    System.out.println("Difficoltà: " + difficolta);
+                    //System.out.println("Difficoltà: " + difficolta);
                 }
                 
                 // Imposto x e y per il testo
@@ -360,32 +393,51 @@ public class MainApp extends Application {
 
                 vite.setImage("main/images/lives" + contaVite + ".png");
                 vite.render(gc);
-
-                // Controllo se il gioco è finito
-                if (contaVite == 0) {
-                    // Blocchiamo il gioco
-                    gameStarted = false;
-                    gc.setFont(customFont);
-                    // Metto uno sfondo foto
-                    Sprite gameOver = new Sprite();
-                    gameOver.setImage("main/images/gameOver.png");
-                    gameOver.render(gc);
-                    drawText("Score: " + score, dimX / 2 - 200, dimY / 2 + 100, Color.RED);
-                    drawText("Premi 'P' per tornare al menu", dimX / 2 - 400, dimY / 2 + 200, Color.RED);
-                    // Se schiaccio "P" inizia il gioco
-                    scene.setOnKeyPressed(e -> {
-                        if (e.getText().equals("p") && !gameStarted) {
-                            contaVite = 3;
-                            score = 0;
-                            // Resetto la difficoltà
-                            difficolta = 200;
-                            mainMenu(scene);
-                        }
-                    });
-                }
-                
             }
-        }.start();
+        };
+        gameTimer.start();
+    }
+
+    public void gameOver(Scene scene) {
+
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
+        // Spiegare cosa valgono i vari frutti e le bombe
+        gc.clearRect(0, 0, dimX, dimY);
+
+        Sprite sfondo = new Sprite();
+        sfondo.setImage("main/images/gameOverBackgroundBig.png");
+        sfondo.setPosition(0, 0);
+        sfondo.setVelocity(0, 0);
+        sfondo.render(gc);
+
+        // Animazione loop
+        gameOverTimer = new AnimationTimer() {
+            double lastNanoTime = System.nanoTime();
+
+            public void handle(long currentNanoTime) {
+                gc.clearRect(0, 0, dimX, dimY);
+
+                // Disegna lo sfondo
+                sfondo.render(gc);
+
+                // Scritta
+                gc.setFont(customFont);
+                drawText(("Punteggio: "+score), dimX / 2 - 140, dimY -170, Color.RED);
+                gc.setFont(customFont2);
+                drawText("Premi il tasto 'P' per tornare al menu", dimX/2 -250, dimY -130, Color.RED);
+
+                // Gestione input
+                scene.setOnKeyPressed(e -> {
+                    if (e.getText().equals("p") && !gameStarted) {
+                        mainMenu(scene);
+                    }
+                });
+            }
+        };
+        gameOverTimer.start();
+
     }
 
     public static void main(String[] args) {
