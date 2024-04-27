@@ -30,6 +30,7 @@ public class MainApp extends Application {
     public static int contaVite = 3;
     Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
     Font customFont2 = loadFont("src/main/fonts/go3v2.ttf", 30);
+    Font customFont3 = loadFont("src/main/fonts/go3v2.ttf", 80);
     private AnimationTimer mainMenuTimer;
     private AnimationTimer gameTimer;
     private AnimationTimer gameOverTimer;
@@ -225,30 +226,70 @@ public class MainApp extends Application {
         sfondo.setVelocity(0, 0);
         sfondo.render(gc);
         
+        // Agggiungo delle foto di fianco a ogni spiegazione
+        Sprite frutto = new Sprite();
+        frutto.setImage("main/images/appleMedium.png");
+        frutto.setPosition(dimX-350, 175);
+        frutto.setRotationAngle(80);
+
+        Sprite bomba = new Sprite();
+        bomba.setImage("main/images/bombFatalMedium.png");
+        bomba.setPosition(dimX-200, 250);
+        bomba.setRotationAngle(80);
+
+        Sprite vite = new Sprite();
+        vite.setImage("main/images/lives3.png");
+        vite.setPosition(dimX-275, 375);
+
+        Sprite back = new Sprite();
+        back.setImage("main/images/BackMin.png");
+        back.setPosition(30, 20);
+
+
         // Animazione loop
         infoMenuTimer =new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
 
             public void handle(long currentNanoTime) {
+                double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
+                lastNanoTime = currentNanoTime;
                 gc.clearRect(0, 0, dimX, dimY);
 
                 // Disegna lo sfondo
                 sfondo.render(gc);
 
                 // Scritta
-                gc.setFont(customFont);
-                drawText("Info", dimX / 2 - 50, 50, Color.WHITE);
+                gc.setFont(customFont3);
+                drawText("Info", dimX / 2 - 100, 80, Color.WHITE);
                 gc.setFont(customFont2);
-                drawText("Fruit Ninja è un gioco in cui bisogna tagliare i frutti \nma non le bombe.", 50, 100,
+                drawText("Fruit Ninja è un gioco in cui bisogna tagliare i frutti \nma non le bombe.", 75, 125,
                 Color.WHITE);
-                drawText("Ogni frutto tagliato vale 10 punti, ogni bomba tagliata \ntoglie 100 punti.", 50, 200,
+                drawText("Ogni frutto tagliato vale 10 punti,\n\nogni bomba tagliata toglie 100 punti.", 75, 250,
                 Color.WHITE);
-                drawText("Il gioco finisce quando le vite sono 0.", 50, 300, Color.WHITE);
-                drawText("Premi 'P' per tornare al menu", 50, 400, Color.WHITE);
-                
+                drawText("Il gioco finisce quando le vite sono 0.", 75, 400, Color.WHITE);
+                drawText("Premi 'P' per tornare al menu", 75, dimY-50, Color.WHITE);
+
+
+                frutto.updateRotation(elapsedTime);
+                frutto.render(gc);
+                bomba.updateRotation(elapsedTime);
+                bomba.render(gc);
+                vite.render(gc);
+                back.render(gc);
+
                 // Gestione input
                 scene.setOnKeyPressed(e -> {
                     if (e.getText().equals("p")) {
+                        mainMenu(scene);
+                    }
+                });
+
+                // Controllo se si clicca il pulsante back
+                scene.setOnMouseClicked(e -> {
+                    double x = e.getSceneX();
+                    double y = e.getSceneY();
+                    if (x >= 30 && x <= 130 && y >= 20 && y <= 120) {
+                        // Cambio schermata e ritorno a quella principale
                         mainMenu(scene);
                     }
                 });
