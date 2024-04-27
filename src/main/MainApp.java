@@ -31,6 +31,7 @@ public class MainApp extends Application {
     Font customFont = loadFont("src/main/fonts/go3v2.ttf", 50);
     Font customFont2 = loadFont("src/main/fonts/go3v2.ttf", 30);
     Font customFont3 = loadFont("src/main/fonts/go3v2.ttf", 80);
+    Font customFont4 = loadFont("src/main/fonts/go3v2.ttf", 20);
     private AnimationTimer mainMenuTimer;
     private AnimationTimer gameTimer;
     private AnimationTimer gameOverTimer;
@@ -205,8 +206,9 @@ public class MainApp extends Application {
                 infoButton.render(gc);
                 infoButton2.render(gc);
                 
+                gc.setFont(customFont);
                 drawText("Best \nScore:",dimX/2+ 250, dimY/2 + 50, Color.WHITE);
-                drawText(String.valueOf(BestScore) ,dimX/2+ 250, dimY/2 + 200, Color.WHITE);
+                drawText(String.valueOf(BestScore) ,dimX/2+ 250, dimY/2 + 175, Color.WHITE);
                 
             }
         };
@@ -229,17 +231,17 @@ public class MainApp extends Application {
         // Agggiungo delle foto di fianco a ogni spiegazione
         Sprite frutto = new Sprite();
         frutto.setImage("main/images/appleMedium.png");
-        frutto.setPosition(dimX-350, 175);
+        frutto.setPosition(dimX-350, 185);
         frutto.setRotationAngle(80);
 
         Sprite bomba = new Sprite();
         bomba.setImage("main/images/bombFatalMedium.png");
-        bomba.setPosition(dimX-200, 250);
+        bomba.setPosition(dimX-200, 275);
         bomba.setRotationAngle(80);
 
         Sprite vite = new Sprite();
         vite.setImage("main/images/lives3.png");
-        vite.setPosition(dimX-275, 375);
+        vite.setPosition(dimX-275, 400);
 
         Sprite back = new Sprite();
         back.setImage("main/images/BackMin.png");
@@ -262,11 +264,16 @@ public class MainApp extends Application {
                 gc.setFont(customFont3);
                 drawText("Info", dimX / 2 - 100, 80, Color.WHITE);
                 gc.setFont(customFont2);
-                drawText("Fruit Ninja è un gioco in cui bisogna tagliare i frutti \nma non le bombe.", 75, 125,
+                drawText("Fruit Ninja è un gioco in cui bisogna tagliare i frutti \nper vincere... ma attento alle bombe!", 80, 125,
                 Color.WHITE);
-                drawText("Ogni frutto tagliato vale 10 punti,\n\nogni bomba tagliata toglie 100 punti.", 75, 250,
+                drawText("Ogni frutto tagliato vale 10 punti,", 75, 250,
                 Color.WHITE);
-                drawText("Il gioco finisce quando le vite sono 0.", 75, 400, Color.WHITE);
+                drawText("ogni bomba tagliata toglie 100 punti,", 75, 350, Color.WHITE);
+                gc.setFont(customFont4);
+                drawText("Se un frutto cade perdi una vita", 75, 275, Color.WHITE);
+                drawText("e una vita.", 75, 375, Color.WHITE);
+                gc.setFont(customFont2);
+                drawText("Il gioco finisce quando le vite sono 0.", 75, 450, Color.WHITE);
                 drawText("Premi 'P' per tornare al menu", 75, dimY-50, Color.WHITE);
 
 
