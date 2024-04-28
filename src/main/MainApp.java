@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -475,7 +473,6 @@ public class MainApp extends Application {
 
         // Animazione loop
         gameOverTimer = new AnimationTimer() {
-            double lastNanoTime = System.nanoTime();
 
             public void handle(long currentNanoTime) {
                 gc.clearRect(0, 0, dimX, dimY);
