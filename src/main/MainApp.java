@@ -51,7 +51,7 @@ public class MainApp extends Application {
     private boolean infoMenu = false;
 
     // Musica
-    
+    public static double volume = 0.25;
     // Main theme
     String musicFile1 = "src/main/music/mainTheme.mp3"; 
     Media mainTheme = new Media(new File(musicFile1).toURI().toString());
@@ -195,6 +195,13 @@ public class MainApp extends Application {
         infoButton2.setRotationAngle(-80);
         infoButton2.render(gc);
 
+        Sprite volumeButton = new Sprite();
+        volumeButton.setImage("main/images/volume-up.png");
+        volumeButton.setPosition(dimX - 70, dimY - 70);
+        volumeButton.setVelocity(0, 0);
+        volumeButton.setRotationAngle(0);
+        volumeButton.render(gc);
+
         // nuova animazione
         mainMenuTimer = new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
@@ -246,6 +253,19 @@ public class MainApp extends Application {
                         playSword();
                         infoMenu(scene);
                     }
+                    if( x >= dimX - 70 && x <= dimX - 20 && y >= dimY - 70 && y <= dimY - 20 && !gameStarted && mainMenu){
+                        // Suono della spada
+                        // Cambio immagine del volume
+                        if (volume == 0){
+                            playSword();
+                            volumeButton.setImage("main/images/volume-up.png");
+                            volume = 0.25;
+                        } else {
+                            volumeButton.setImage("main/images/volume.png");
+                            volume = 0;
+                        }
+
+                    }
                 });
                 
                 gc.clearRect(0, 0, dimX, dimY);
@@ -260,6 +280,7 @@ public class MainApp extends Application {
                 infoButton2.updateRotation(elapsedTime);
                 infoButton.render(gc);
                 infoButton2.render(gc);
+                volumeButton.render(gc);
                 
                 gc.setFont(customFont);
                 drawText("Best \nScore:",dimX/2+ 250, dimY/2 + 50, Color.WHITE);
@@ -594,7 +615,7 @@ public class MainApp extends Application {
     // Main theme
     private void playMainTheme() {
         if(mainThemeStarted == false){
-            mediaPlayerMain.setVolume(0.25);
+            mediaPlayerMain.setVolume(volume-0.1);
             // Impostazione della riproduzione in loop
             mediaPlayerMain.setCycleCount(MediaPlayer.INDEFINITE); // Riproduci in loop indefinito
 
@@ -616,13 +637,12 @@ public class MainApp extends Application {
     // Game over theme
     private void playGameOverTheme() {
         if(gameOverThemeStarted == false){
-            mediaPlayerGameOver.setVolume(0.25);
+            mediaPlayerGameOver.setVolume(volume);
             // Impostazione della riproduzione in loop
             mediaPlayerGameOver.setCycleCount(MediaPlayer.INDEFINITE); // Riproduci in loop indefinito
 
             // Imposta un listener per gestire l'evento di fine della riproduzione
             mediaPlayerGameOver.setOnEndOfMedia(() -> {
-                System.out.println("Game over theme ended");
                 // Quando la musica termina, riavvia la riproduzione dall'inizio
                 mediaPlayerGameOver.stop();
                 mediaPlayerGameOver.play();
@@ -640,8 +660,8 @@ public class MainApp extends Application {
     private void playSword() {
         // Resetto il ciclo di riproduzione della spada
         mediaPlayerSword.stop();
-        mediaPlayerSword.setVolume(0.75);
-        mediaPlayerMain.setVolume(0.1);
+        mediaPlayerSword.setVolume(volume*3);
+        mediaPlayerMain.setVolume(volume-0.1);
         mediaPlayerSword.play();
         // Attendo 0.5 secondi
         try {
@@ -649,7 +669,7 @@ public class MainApp extends Application {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        mediaPlayerMain.setVolume(0.25);
+        mediaPlayerMain.setVolume(volume);
     }
 
     // Frutto tagliato
@@ -659,19 +679,19 @@ public class MainApp extends Application {
         switch (num) {
             case 0:
                 mediaPlayerFruit0.stop();
-                mediaPlayerFruit0.setVolume(0.25);
+                mediaPlayerFruit0.setVolume(volume);
                 mediaPlayerFruit0.play();
                 num++;
                 break;
             case 1:
                 mediaPlayerFruit1.stop();
-                mediaPlayerFruit1.setVolume(0.25);
+                mediaPlayerFruit1.setVolume(volume);
                 mediaPlayerFruit1.play();
                 num++;
                 break;
             case 2:
                 mediaPlayerFruit2.stop();
-                mediaPlayerFruit2.setVolume(0.25);
+                mediaPlayerFruit2.setVolume(volume);
                 mediaPlayerFruit2.play();
                 num=0;
                 break;
@@ -683,7 +703,7 @@ public class MainApp extends Application {
     // Bomba tagliata
     public static void playBomb() {
         mediaPlayerBomb.stop();
-        mediaPlayerBomb.setVolume(0.25);
+        mediaPlayerBomb.setVolume(volume);
         mediaPlayerBomb.play();
     }
 
