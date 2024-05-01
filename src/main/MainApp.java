@@ -42,6 +42,12 @@ public class MainApp extends Application {
 
     private GraphicsContext gc;
 
+    // Varibili booleane per controllare le schermate di gioco
+    private boolean mainMenu = true;
+    private boolean game = false;
+    private boolean gameOver = false;
+    private boolean infoMenu = false;
+
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -94,6 +100,12 @@ public class MainApp extends Application {
     }
 
     public void mainMenu(Scene scene){
+        // Disattivo tutte le altre schermate
+        mainMenu = true;
+        game = false;
+        gameOver = false;
+        infoMenu = false;
+
         // Controllo se sono iniziati i timer e li fermo
         if (mainMenuTimer != null) {
             mainMenuTimer.stop();
@@ -172,12 +184,12 @@ public class MainApp extends Application {
                         infoButton.setRotationAngle(80);
                     }
                 });
-
+            
                 // Controllo se il mouse è sopra il pulsante
                 scene.setOnMouseClicked(e -> {
                     double x = e.getSceneX();
                     double y = e.getSceneY();
-                    if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211 && !gameStarted){
+                    if( x >= dimX / 2 - 100 && x <= dimX / 2 + 155 && y >= dimY / 2 - 50 && y <= dimY / 2 + 211 && !gameStarted && mainMenu){
                         gc.clearRect(0, 0, dimX, dimY);
                         // Imposto le vite e il punteggio a 0 e difficolta a 200
                         contaVite = 3;
@@ -185,7 +197,7 @@ public class MainApp extends Application {
                         difficolta = 200;
                         startGame(scene);
                     }
-                    if( x >= 80 && x <= 280 && y >= dimY / 2 + 50 && y <= dimY / 2 + 250 && !gameStarted){
+                    if( x >= 80 && x <= 280 && y >= dimY / 2 + 50 && y <= dimY / 2 + 250 && !gameStarted && mainMenu){
                         gc.clearRect(0, 0, dimX, dimY);
                         infoMenu(scene);
                     }
@@ -214,6 +226,12 @@ public class MainApp extends Application {
     }
 
     public void infoMenu(Scene scene){
+        // Disattivo tutte le altre schermate
+        mainMenu = false;
+        game = false;
+        gameOver = false;
+        infoMenu = true;
+
         if(mainMenuTimer != null){
             mainMenuTimer.stop();
         }
@@ -284,7 +302,7 @@ public class MainApp extends Application {
 
                 // Gestione input
                 scene.setOnKeyPressed(e -> {
-                    if (e.getText().equals("p")) {
+                    if (e.getText().equals("p") && infoMenu) {
                         mainMenu(scene);
                     }
                 });
@@ -293,7 +311,7 @@ public class MainApp extends Application {
                 scene.setOnMouseClicked(e -> {
                     double x = e.getSceneX();
                     double y = e.getSceneY();
-                    if (x >= 30 && x <= 130 && y >= 20 && y <= 120) {
+                    if (x >= 30 && x <= 130 && y >= 20 && y <= 120 && !gameStarted && infoMenu) {
                         // Cambio schermata e ritorno a quella principale
                         mainMenu(scene);
                     }
@@ -306,6 +324,12 @@ public class MainApp extends Application {
     
     
     public void startGame(Scene scene) {
+        // Disattivo tutte le altre schermate
+        mainMenu = false;
+        game = true;
+        gameOver = false;
+        infoMenu = false;
+
         if (mainMenuTimer != null){
             mainMenuTimer.stop();
         }
@@ -413,7 +437,7 @@ public class MainApp extends Application {
                             double x = e.getSceneX();
                             double y = e.getSceneY();
                             for (int i = 0; i < elencoFrutta.size(); i++) {
-                                if (elencoFrutta.get(i).intersects(x, y)) {
+                                if (elencoFrutta.get(i).intersects(x, y) && game) {
                                     score = elencoFrutta.get(i).tagliato(score);
                                 }
                             }
@@ -459,6 +483,12 @@ public class MainApp extends Application {
 
     public void gameOver(Scene scene) {
 
+        // Disattivo tutte le altre schermate
+        mainMenu = false;
+        game = false;
+        gameOver = true;
+        infoMenu = false;
+
         if (gameTimer != null) {
             gameTimer.stop();
         }
@@ -494,10 +524,11 @@ public class MainApp extends Application {
 
                 // Gestione input
                 scene.setOnKeyPressed(e -> {
-                    if (e.getText().equals("p") && !gameStarted) {
+                    if (e.getText().equals("p") && !gameStarted && gameOver) {
                         mainMenu(scene);
                     }
                 });
+                
             }
         };
         gameOverTimer.start();

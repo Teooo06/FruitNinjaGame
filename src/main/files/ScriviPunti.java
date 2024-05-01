@@ -24,8 +24,6 @@ public class ScriviPunti {
 
             fileDaScrivere.close();
 
-            System.out.println("Dati scritti con successo.");
-
 
         } catch (IOException e) {
             System.err.println("Errore nella scrittura dei dati su file: " + e.getMessage());

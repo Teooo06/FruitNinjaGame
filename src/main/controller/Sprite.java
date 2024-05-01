@@ -200,7 +200,6 @@ public class Sprite {
                 }
                 tagliato = true;
 
-                //TODO: aggiungere funzionlità vite
                 // deve modificare il numero di vite nella mainApp
                 if (MainApp.contaVite > 0) {
                     MainApp.contaVite--;
