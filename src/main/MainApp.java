@@ -18,6 +18,8 @@ import main.controller.Sprite;
 import main.files.LeggiPunti;
 import main.files.ScriviPunti;
 import javafx.scene.text.Font;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class MainApp extends Application {
     private int dimX = 1000;
@@ -39,14 +41,46 @@ public class MainApp extends Application {
     private int BestScore = 0;
     LeggiPunti leggiPunti = new LeggiPunti();
     ScriviPunti scriviPunti = new ScriviPunti();
-
+    
     private GraphicsContext gc;
-
+    
     // Varibili booleane per controllare le schermate di gioco
     private boolean mainMenu = true;
     private boolean game = false;
     private boolean gameOver = false;
     private boolean infoMenu = false;
+
+    // Musica
+    
+    // Main theme
+    String musicFile1 = "src/main/music/mainTheme.mp3"; 
+    Media mainTheme = new Media(new File(musicFile1).toURI().toString());
+    MediaPlayer mediaPlayerMain = new MediaPlayer(mainTheme);
+    private boolean mainThemeStarted = false;
+    // Game over theme
+    String musicFile2 = "src/main/music/gameOver.mp3"; 
+    Media gameOverTheme = new Media(new File(musicFile2).toURI().toString());
+    MediaPlayer mediaPlayerGameOver = new MediaPlayer(gameOverTheme);
+    private boolean gameOverThemeStarted = false;
+    // Sword slash
+    String musicFile3 = "src/main/music/sword.mp3";
+    Media swordSlash = new Media(new File(musicFile3).toURI().toString());
+    MediaPlayer mediaPlayerSword = new MediaPlayer(swordSlash);
+    // Fruit cut 0,1,2 (Static perchè deve essere accessibile da Sprite.java)
+    static String musicFile4 = "src/main/music/fruit0.mp3";
+    static Media fruitCut = new Media(new File(musicFile4).toURI().toString());
+    static MediaPlayer mediaPlayerFruit0 = new MediaPlayer(fruitCut);
+    static String musicFile5 = "src/main/music/fruit1.mp3";
+    static Media fruitCut1 = new Media(new File(musicFile5).toURI().toString());
+    static MediaPlayer mediaPlayerFruit1 = new MediaPlayer(fruitCut1);
+    static String musicFile6 = "src/main/music/fruit2.mp3";
+    static Media fruitCut2 = new Media(new File(musicFile6).toURI().toString());
+    static MediaPlayer mediaPlayerFruit2 = new MediaPlayer(fruitCut2);
+    // Bomb cut
+    static String musicFile7 = "src/main/music/bombMini.mp3";
+    static Media bombCut = new Media(new File(musicFile7).toURI().toString());
+    static MediaPlayer mediaPlayerBomb = new MediaPlayer(bombCut);
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -105,6 +139,11 @@ public class MainApp extends Application {
         game = false;
         gameOver = false;
         infoMenu = false;
+        
+        // Spengo la musica di game over
+        stopGameOverTheme();
+        // Avvio la musica
+        playMainTheme();
 
         // Controllo se sono iniziati i timer e li fermo
         if (mainMenuTimer != null) {
@@ -161,6 +200,8 @@ public class MainApp extends Application {
             double lastNanoTime = System.nanoTime();
             
             public void handle(long currentNanoTime) {
+                playMainTheme();
+
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
 
@@ -195,10 +236,14 @@ public class MainApp extends Application {
                         contaVite = 3;
                         score = 0;
                         difficolta = 200;
+                        // Suono della spada
+                        playSword();
                         startGame(scene);
                     }
                     if( x >= 80 && x <= 280 && y >= dimY / 2 + 50 && y <= dimY / 2 + 250 && !gameStarted && mainMenu){
                         gc.clearRect(0, 0, dimX, dimY);
+                        // Suono della spada
+                        playSword();
                         infoMenu(scene);
                     }
                 });
@@ -269,6 +314,8 @@ public class MainApp extends Application {
             double lastNanoTime = System.nanoTime();
 
             public void handle(long currentNanoTime) {
+                playMainTheme();
+
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
                 gc.clearRect(0, 0, dimX, dimY);
@@ -284,7 +331,7 @@ public class MainApp extends Application {
                 Color.WHITE);
                 drawText("Ogni frutto tagliato vale 10 punti,", 75, 250,
                 Color.WHITE);
-                drawText("ogni bomba tagliata toglie 100 punti,", 75, 350, Color.WHITE);
+                drawText("ogni bomba tagliata toglie 50 punti,", 75, 350, Color.WHITE);
                 gc.setFont(customFont4);
                 drawText("Se un frutto cade perdi una vita", 75, 275, Color.WHITE);
                 drawText("e una vita.", 75, 375, Color.WHITE);
@@ -312,6 +359,8 @@ public class MainApp extends Application {
                     double x = e.getSceneX();
                     double y = e.getSceneY();
                     if (x >= 30 && x <= 130 && y >= 20 && y <= 120 && !gameStarted && infoMenu) {
+                        // Suono il taglio della spada
+                        playSword();
                         // Cambio schermata e ritorno a quella principale
                         mainMenu(scene);
                     }
@@ -360,6 +409,7 @@ public class MainApp extends Application {
             double lastNanoTime = System.nanoTime();
             
             public void handle(long currentNanoTime) {
+                playMainTheme();
                 /*
                 // Se il gioco è in pausa non fare nulla
                 if (!gameStarted) {
@@ -489,6 +539,11 @@ public class MainApp extends Application {
         gameOver = true;
         infoMenu = false;
 
+        // Fermo la musica principale
+        stopMainTheme();
+        // Inizio la musica di game over
+        playGameOverTheme();
+
         if (gameTimer != null) {
             gameTimer.stop();
         }
@@ -533,6 +588,103 @@ public class MainApp extends Application {
         };
         gameOverTimer.start();
 
+    }
+
+    // Metodi per le musiche
+    // Main theme
+    private void playMainTheme() {
+        if(mainThemeStarted == false){
+            mediaPlayerMain.setVolume(0.25);
+            // Impostazione della riproduzione in loop
+            mediaPlayerMain.setCycleCount(MediaPlayer.INDEFINITE); // Riproduci in loop indefinito
+
+            // Imposta un listener per gestire l'evento di fine della riproduzione
+            mediaPlayerMain.setOnEndOfMedia(() -> {
+                // Quando la musica termina, riavvia la riproduzione dall'inizio
+                mediaPlayerMain.stop();
+                mediaPlayerMain.play();
+            });
+
+            mediaPlayerMain.play(); // Avvia la riproduzione
+        }
+    }
+
+    private void stopMainTheme() {
+        mediaPlayerMain.stop();
+    }
+
+    // Game over theme
+    private void playGameOverTheme() {
+        if(gameOverThemeStarted == false){
+            mediaPlayerGameOver.setVolume(0.25);
+            // Impostazione della riproduzione in loop
+            mediaPlayerGameOver.setCycleCount(MediaPlayer.INDEFINITE); // Riproduci in loop indefinito
+
+            // Imposta un listener per gestire l'evento di fine della riproduzione
+            mediaPlayerGameOver.setOnEndOfMedia(() -> {
+                System.out.println("Game over theme ended");
+                // Quando la musica termina, riavvia la riproduzione dall'inizio
+                mediaPlayerGameOver.stop();
+                mediaPlayerGameOver.play();
+            });
+
+            mediaPlayerGameOver.play(); // Avvia la riproduzione
+        }
+    }
+
+    private void stopGameOverTheme() {
+        mediaPlayerGameOver.stop();
+    }
+
+    // Suono spada
+    private void playSword() {
+        // Resetto il ciclo di riproduzione della spada
+        mediaPlayerSword.stop();
+        mediaPlayerSword.setVolume(0.75);
+        mediaPlayerMain.setVolume(0.1);
+        mediaPlayerSword.play();
+        // Attendo 0.5 secondi
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        mediaPlayerMain.setVolume(0.25);
+    }
+
+    // Frutto tagliato
+    public static void playFruit() {
+        int num = 0;
+        // Resetto il ciclo di riproduzione del frutto e lo riproduco
+        switch (num) {
+            case 0:
+                mediaPlayerFruit0.stop();
+                mediaPlayerFruit0.setVolume(0.25);
+                mediaPlayerFruit0.play();
+                num++;
+                break;
+            case 1:
+                mediaPlayerFruit1.stop();
+                mediaPlayerFruit1.setVolume(0.25);
+                mediaPlayerFruit1.play();
+                num++;
+                break;
+            case 2:
+                mediaPlayerFruit2.stop();
+                mediaPlayerFruit2.setVolume(0.25);
+                mediaPlayerFruit2.play();
+                num=0;
+                break;
+            default:
+                num = 0;
+                break;
+        }
+    }
+    // Bomba tagliata
+    public static void playBomb() {
+        mediaPlayerBomb.stop();
+        mediaPlayerBomb.setVolume(0.25);
+        mediaPlayerBomb.play();
     }
 
     public static void main(String[] args) {

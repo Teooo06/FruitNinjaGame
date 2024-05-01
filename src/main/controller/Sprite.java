@@ -192,6 +192,8 @@ public class Sprite {
             // Cambia immagine in immagine tagliata
             //setImage("main/images/bombCut.png");
             if (tagliato==false) {
+                // Musica bomba tagliata
+                MainApp.playBomb();
                 // Sottrae 50 punti se ce ne sono
                 if (punteggio >= 50) {
                     punteggio -= 50;
@@ -216,6 +218,8 @@ public class Sprite {
             tagliato = true;
             // Cambia immagine in immagine tagliata
             String nome = "main/images/" + tipoSprite + "SplitMedium.png";
+            // Riproduco il suono una volta playFruit();
+            MainApp.playFruit();
             setImage(nome);
         }
         termina = true;
