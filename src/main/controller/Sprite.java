@@ -147,48 +147,70 @@ public class Sprite {
         difficolta = 70; // 70% di probabilità di uscita di un frutto
         difficoltaBomba = 80; // 80% di probabilità di uscita di una bomba non fatale
 
-        int j = (int) (Math.random() * 100);
-        if (j < difficolta) {
-            int i = (int) (Math.random() * 6); // da 0 a 5
-            switch (i) {
-                case 0:
-                    setImage("main/images/appleMedium.png");
-                    tipoSprite = "apple";
-                    break;
-                case 1:
-                    setImage("main/images/kiwiMedium.png");
-                    tipoSprite = "kiwi";
-                    break;
-                case 2:
-                    setImage("main/images/lemonMedium.png");
-                    tipoSprite = "lemon";
-                    break;
-                case 3:
-                    setImage("main/images/orangeMedium.png");
-                    tipoSprite = "orange";
-                    break;
-                case 4:
-                    setImage("main/images/pearMedium.png");
-                    tipoSprite = "pear";
-                    break;
-                case 5:
-                    setImage("main/images/pomMedium.png");
-                    tipoSprite = "pom";
-                    break;
+        // Genera un numero casuale tra 0 e 99
+        int num = (int) (Math.random() * 100);
+        // Se non è 8
+        if (num<8){
+            int j = (int) (Math.random() * 100); // da 0 a 99
+            if (j < difficolta) {
+                int i = (int) (Math.random() * 6); // da 0 a 5
+                switch (i) {
+                    case 0:
+                        setImage("main/images/appleMedium.png");
+                        tipoSprite = "apple";
+                        break;
+                    case 1:
+                        setImage("main/images/kiwiMedium.png");
+                        tipoSprite = "kiwi";
+                        break;
+                    case 2:
+                        setImage("main/images/lemonMedium.png");
+                        tipoSprite = "lemon";
+                        break;
+                    case 3:
+                        setImage("main/images/orangeMedium.png");
+                        tipoSprite = "orange";
+                        break;
+                    case 4:
+                        setImage("main/images/pearMedium.png");
+                        tipoSprite = "pear";
+                        break;
+                    case 5:
+                        setImage("main/images/pomMedium.png");
+                        tipoSprite = "pom";
+                        break;
+                }
+            } else {
+                int k = (int) (Math.random() * 100);
+                if (k > difficoltaBomba) {
+                    setImage("main/images/bombFatalMedium.png");
+                    tipoSprite = "bombFatal";
+                    bomba = true;
+                } else {
+                    setImage("main/images/bombTimeMedium.png");
+                    tipoSprite = "bombTime";
+                    bomba = true;
+                }
+
             }
         } else {
-            int k = (int) (Math.random() * 100);
-            if (k > difficoltaBomba) {
-                setImage("main/images/bombFatalMedium.png");
-                tipoSprite = "bombFatal";
-                bomba = true;
-            } else {
-                setImage("main/images/bombTimeMedium.png");
-                tipoSprite = "bombTime";
-                bomba = true;
+            int h = (int) (Math.random() * 2);
+            switch (h) {
+                case 0:
+                    setImage("main/images/specialFruit1.png");
+                    tipoSprite = "specialFruit1";
+                    bomba = false;                    
+                    break;
+                case 1:
+                    setImage("main/images/specialFruit2.png");
+                    tipoSprite = "specialFruit2";
+                    bomba = false;
+                    break;
+                default:
+                    break;
             }
-
         }
+
 
     }
 
@@ -200,6 +222,7 @@ public class Sprite {
         // Se il frutto è una bomba
         if (tipoSprite.equals("bombFatal") || tipoSprite.equals("bombTime")){
             // Cambia immagine in immagine tagliata
+            // TODO: Cambiare immagine in bomba tagliata
             //setImage("main/images/bombCut.png");
             if (tagliato==false) {
                 // Musica bomba tagliata
@@ -221,6 +244,33 @@ public class Sprite {
             termina = true;
             return punteggio;
         }
+        // Se sono i frutti speciali
+        if (bomba == false && (tipoSprite.equals("specialFruit1") || tipoSprite.equals("specialFruit2"))){
+            if(tagliato==false){
+                // Aggiunge 10 punti
+                punteggio += 50;
+                tagliato = true;
+                // Cambia immagine in immagine tagliata
+                String nome = "main/images/" + tipoSprite + "Split.png";
+                // creo un'altro sprite per lo splash
+                Sprite splash = new Sprite();
+                splash.setImageSplash();
+                splash.setPosition(positionX, positionY);
+                splash.setTempoIniziale(System.currentTimeMillis());
+                splash.setTempoDistruzione(7);
+                splash.setOpacity(0.5);
+                // Ruoto lo splash
+                splash.setRotate((int) (Math.random() * 360));
+                // Aggiungo lo splash alla lista
+                MainApp.elencoSplash.add(splash);
+                // Riproduco il suono una volta playFruit();
+                MainApp.playFruit();
+                setImage(nome);
+                termina = true;
+                return punteggio;
+            }
+        }
+
         // Cambia immagine in immagine tagliata
         if (tagliato==false) {
             // Aggiunge 10 punti
