@@ -81,6 +81,10 @@ public class MainApp extends Application {
     static Media bombCut = new Media(new File(musicFile7).toURI().toString());
     static MediaPlayer mediaPlayerBomb = new MediaPlayer(bombCut);
 
+    // Gestione Splash
+    // Crea un arraylist per gestire gli splash
+    public static ArrayList<Sprite> elencoSplash = new ArrayList<Sprite>();
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -421,7 +425,7 @@ public class MainApp extends Application {
         
         // Crea un arraylist per gestire i frutti
         ArrayList<Sprite> elencoFrutta = new ArrayList<Sprite>();
-        
+
         // Controllo del tempo
         double tempoIniziale = System.currentTimeMillis();
         
@@ -431,11 +435,6 @@ public class MainApp extends Application {
             
             public void handle(long currentNanoTime) {
                 playMainTheme();
-                /*
-                // Se il gioco è in pausa non fare nulla
-                if (!gameStarted) {
-                    return;
-                } */
                 
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
@@ -482,6 +481,22 @@ public class MainApp extends Application {
                     
                     elencoFrutta.add(frutto);
                 }
+
+                // Aggiorno il tempo di distruzione degli splash
+                for (int i = 0; i < elencoSplash.size(); i++) {
+                    elencoSplash.get(i).render(gc);
+                }
+
+                // Aggiorno il tempo di distrizione degli splash
+                for (int i = 0; i < elencoSplash.size(); i++) {
+                    // Tolgo al tempo di distruzione (il tempo attuale - il tempo iniziale)
+                    double tempoDistruzione = elencoSplash.get(i).getTempoDistruzione()- ((System.currentTimeMillis() - elencoSplash.get(i).getTempoIniziale()) / 1000.0);
+                    // Aggiorno opacità
+                    elencoSplash.get(i).setOpacity(elencoSplash.get(i).getOpacity() - 0.0015);
+                    if(tempoDistruzione <= 0){
+                        elencoSplash.remove(i);
+                    }
+                }
                 
                 // movimento frutto
                 for (Sprite frutto : elencoFrutta) {
@@ -502,6 +517,7 @@ public class MainApp extends Application {
                         elencoFrutta.remove(i);
                     }
                 }
+
 
                 // Controllo se il mouse è sopra un frutto metre è premuto
                 scene.setOnMouseDragged(e->{

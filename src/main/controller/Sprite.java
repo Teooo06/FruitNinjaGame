@@ -20,6 +20,7 @@ public class Sprite {
     private double rotate; // Rotation angle in degrees
     private double width;
     private double height;
+    private double opacity = 1.0; // Opacità predefinita
     private int difficolta;
     private int difficoltaBomba;
 
@@ -28,6 +29,9 @@ public class Sprite {
     private double gravity = 1.62;
     private double velocitaIniziale;
     private double tempoIniziale;
+
+    // Timer distruzioni
+    private double tempoDistruzione;
 
     public Sprite() {
         positionX = 0;
@@ -81,6 +85,10 @@ public class Sprite {
         this.rotationAngle = angleDegrees;
     }
 
+    public void setRotate(double angleDegrees) {
+        this.rotate = angleDegrees;
+    }
+
     public void addVelocity(double x, double y) {
         velocityX += x;
         velocityY += y;
@@ -110,7 +118,9 @@ public class Sprite {
         gc.save(); // Save the current state on the stack
         gc.translate(positionX + image.getWidth() / 2, positionY + image.getHeight() / 2); // Translate to the center of
         gc.rotate(rotate); // Rotate around the center of the image
+        gc.setGlobalAlpha(opacity);
         gc.drawImage(image, -image.getWidth() / 2, -image.getHeight() / 2); // Draw the image centered at the translated
+        gc.setGlobalAlpha(1.0);
         gc.restore(); // Restore the last saved state
     }
 
@@ -218,6 +228,17 @@ public class Sprite {
             tagliato = true;
             // Cambia immagine in immagine tagliata
             String nome = "main/images/" + tipoSprite + "SplitMedium.png";
+            // creo un'altro sprite per lo splash
+            Sprite splash = new Sprite();
+            splash.setImageSplash();
+            splash.setPosition(positionX, positionY);
+            splash.setTempoIniziale(System.currentTimeMillis());
+            splash.setTempoDistruzione(7);
+            splash.setOpacity(0.5);
+            // Ruoto lo splash
+            splash.setRotate((int) (Math.random() * 360));
+            // Aggiungo lo splash alla lista
+            MainApp.elencoSplash.add(splash);
             // Riproduco il suono una volta playFruit();
             MainApp.playFruit();
             setImage(nome);
@@ -235,4 +256,43 @@ public class Sprite {
     public boolean isBomba() {
         return bomba;
     }
+
+    public void setImageSplash() {
+        // Imposto l'immagine splash tra le 3
+        int i = (int) (Math.random() * 3); // da 0 a 2
+        switch (i) {
+            case 0:
+                setImage("main/images/colorSplash1.png");
+                break;
+            case 1:
+                setImage("main/images/colorSplash2.png");
+                break;
+            case 2:
+                setImage("main/images/colorSplash3.png");
+                break;
+            default:
+                setImage("main/images/colorSplash1.png");
+        }
+    }
+
+    public void setTempoDistruzione(double tempoDistruzione) {
+        this.tempoDistruzione = tempoDistruzione;
+    }
+
+    public double getTempoDistruzione() {
+        return tempoDistruzione;
+    }
+
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
+    }
+
+    public double getOpacity() {
+        return opacity;
+    } 
+
+    public double getTempoIniziale() {
+        return tempoIniziale;
+    }
+
 }
