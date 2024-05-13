@@ -7,10 +7,13 @@ import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
@@ -84,6 +87,7 @@ public class MainApp extends Application {
     // Gestione Splash
     // Crea un arraylist per gestire gli splash
     public static ArrayList<Sprite> elencoSplash = new ArrayList<Sprite>();
+    public static ArrayList<Sprite> elencoSplashBomba = new ArrayList<Sprite>();
 
 
     @Override
@@ -97,25 +101,36 @@ public class MainApp extends Application {
         loader.setLocation(MainApp.class.getResource("guiFolder/mainGui.fxml"));
         
         Canvas canvas = new Canvas(dimX, dimY);
-        
+
+        // Carica l'immagine del cursore personalizzato
+        Image cursorImage = new Image("main/images/katana.png");
+
+        // Crea un cursore personalizzato utilizzando l'immagine caricata
+        Cursor customCursor = new ImageCursor(cursorImage);
+        canvas.setCursor(customCursor);
+
         //Group root = new Group(canvas,pane);
         Group root = new Group(canvas);
         
         Scene scene = new Scene(root);
+
         primaryStage.setScene(scene);
         
         gc = canvas.getGraphicsContext2D();
-        
         gc.setFont(customFont);
 
         primaryStage.show();
 
         // Leggo il punteggio migliore
         BestScore = leggiPunti.leggiPunti();
-        System.out.println("Best score: " + BestScore);
 
+        // Cambia il cursore quando il mouse entra nella scena
+        scene.setOnMouseEntered(mouseEvent -> canvas.setCursor(customCursor));
 
+        // Ripristina il cursore predefinito quando il mouse esce dalla scena
+        scene.setOnMouseExited(mouseEvent -> canvas.setCursor(Cursor.DEFAULT));
         mainMenu(scene);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,7 +152,7 @@ public class MainApp extends Application {
         gc.fillText(text, x, y); // Testo riempito
     }
 
-    public void mainMenu(Scene scene){
+    public void mainMenu(Scene scene) {
         // Disattivo tutte le altre schermate
         mainMenu = true;
         game = false;
@@ -301,13 +316,13 @@ public class MainApp extends Application {
         game = false;
         gameOver = false;
         infoMenu = true;
-
+        
         if(mainMenuTimer != null){
             mainMenuTimer.stop();
         }
         // Spiegare cosa valgono i vari frutti e le bombe
         gc.clearRect(0, 0, dimX, dimY);
-
+        
         Sprite sfondo = new Sprite();
         sfondo.setImage("main/images/infoMenuMedium.png");
         sfondo.setPosition(0, 0);
@@ -318,31 +333,44 @@ public class MainApp extends Application {
         Sprite frutto = new Sprite();
         frutto.setImage("main/images/appleMedium.png");
         frutto.setPosition(dimX-350, 185);
-        frutto.setRotationAngle(80);
-
+        frutto.setRotationAngle(70);
+        
         Sprite bomba = new Sprite();
         bomba.setImage("main/images/bombFatalMedium.png");
-        bomba.setPosition(dimX-200, 275);
-        bomba.setRotationAngle(80);
-
+        bomba.setPosition(dimX-200, 265);
+        bomba.setRotationAngle(-80);
+        
         Sprite vite = new Sprite();
         vite.setImage("main/images/lives3.png");
-        vite.setPosition(dimX-275, 400);
-
+        vite.setPosition(dimX-285, dimY-100);
+        
         Sprite back = new Sprite();
         back.setImage("main/images/BackMin.png");
         back.setPosition(30, 20);
-
-
+        
+        Sprite special1 = new Sprite();
+        special1.setImage("main/images/specialFruit1Medium.png");
+        special1.setPosition(dimX-350, 375);
+        special1.setRotationAngle(50);
+        
+        Sprite special2 = new Sprite();
+        special2.setImage("main/images/specialFruit2Medium.png");
+        special2.setPosition(dimX-190, 400);
+        special2.setRotationAngle(-90);
+        
         // Animazione loop
         infoMenuTimer =new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
-
+            // Aggiungo una variabile per tener traccia del tempo trascorso
+            double elapsedTimeCounter = 0;
+            
             public void handle(long currentNanoTime) {
                 playMainTheme();
-
+                
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
+                elapsedTimeCounter += elapsedTime;
+                
                 gc.clearRect(0, 0, dimX, dimY);
 
                 // Disegna lo sfondo
@@ -354,15 +382,14 @@ public class MainApp extends Application {
                 gc.setFont(customFont2);
                 drawText("Fruit Ninja è un gioco in cui bisogna tagliare i frutti \nper vincere... ma attento alle bombe!", 80, 125,
                 Color.WHITE);
-                drawText("Ogni frutto tagliato vale 10 punti,", 75, 250,
-                Color.WHITE);
+                drawText("Ogni frutto tagliato vale 10 punti,", 75, 250,Color.WHITE);
                 drawText("ogni bomba tagliata toglie 50 punti,", 75, 350, Color.WHITE);
+                drawText("I frutti speciali valgono 50 punti", 75, 450, Color.WHITE);
                 gc.setFont(customFont4);
                 drawText("Se un frutto cade perdi una vita", 75, 275, Color.WHITE);
                 drawText("e una vita.", 75, 375, Color.WHITE);
                 gc.setFont(customFont2);
-                drawText("Il gioco finisce quando le vite sono 0.", 75, 450, Color.WHITE);
-                drawText("Premi 'P' per tornare al menu", 75, dimY-50, Color.WHITE);
+                drawText("Il gioco finisce quando le vite sono 0.", 75, dimY - 50, Color.WHITE);
 
 
                 frutto.updateRotation(elapsedTime);
@@ -371,6 +398,10 @@ public class MainApp extends Application {
                 bomba.render(gc);
                 vite.render(gc);
                 back.render(gc);
+                special1.updateRotation(elapsedTime);
+                special1.render(gc);
+                special2.updateRotation(elapsedTime);
+                special2.render(gc);
 
                 // Gestione input
                 scene.setOnKeyPressed(e -> {
@@ -390,6 +421,12 @@ public class MainApp extends Application {
                         mainMenu(scene);
                     }
                 });
+
+                // Ogni volta che il tempo trascorso raggiunge un secondo, chiama cambiaVita() e reimposta il contatore
+                if (elapsedTimeCounter >= 1) {
+                    vite.cambiaVita();
+                    elapsedTimeCounter = 0;
+                }
             }
         };
         infoMenuTimer.start();
@@ -482,7 +519,7 @@ public class MainApp extends Application {
                     elencoFrutta.add(frutto);
                 }
 
-                // Aggiorno il tempo di distruzione degli splash
+                // movimento splash
                 for (int i = 0; i < elencoSplash.size(); i++) {
                     elencoSplash.get(i).render(gc);
                 }
@@ -504,6 +541,22 @@ public class MainApp extends Application {
                     frutto.render(gc);
                 }
                 
+                // movimento splash bomba
+                for (int i = 0; i < elencoSplashBomba.size(); i++) {
+                    elencoSplashBomba.get(i).render(gc);
+                }
+
+                // Aggiorno il tempo di distrizione degli splash bomba
+                for (int i = 0; i < elencoSplashBomba.size(); i++) {
+                    // Tolgo al tempo di distruzione (il tempo attuale - il tempo iniziale)
+                    double tempoDistruzione = elencoSplashBomba.get(i).getTempoDistruzione()- ((System.currentTimeMillis() - elencoSplashBomba.get(i).getTempoIniziale()) / 1000.0);
+                    // Aggiorno opacità
+                    elencoSplashBomba.get(i).setOpacity(elencoSplashBomba.get(i).getOpacity() - 0.005);
+                    if(tempoDistruzione <= 0){
+                        elencoSplashBomba.remove(i);
+                    }
+                }
+
                 // Controllo e cancello i frutti sotto 200 px dallo schermo
                 for (int i = 0; i < elencoFrutta.size(); i++) {
                     // Stampa frutti sotto ai 200 px
