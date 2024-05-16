@@ -359,16 +359,11 @@ public class MainApp extends Application {
         // Animazione loop
         infoMenuTimer =new AnimationTimer() {
             double lastNanoTime = System.nanoTime();
-            // Aggiungo una variabile per tener traccia del tempo trascorso
-            double elapsedTimeCounter = 0;
-            
             public void handle(long currentNanoTime) {
                 playMainTheme();
                 
                 double elapsedTime = (currentNanoTime - lastNanoTime) / 1000000000.0;
                 lastNanoTime = currentNanoTime;
-                elapsedTimeCounter += elapsedTime;
-                
                 gc.clearRect(0, 0, dimX, dimY);
 
                 // Disegna lo sfondo
