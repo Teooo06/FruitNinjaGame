@@ -52,7 +52,12 @@ public class MainApp extends Application {
     private boolean game = false;
     private boolean gameOver = false;
     private boolean infoMenu = false;
-
+    
+    // Gestione Splash
+    // Crea un arraylist per gestire gli splash
+    public static ArrayList<Sprite> elencoSplash = new ArrayList<Sprite>();
+    public static ArrayList<Sprite> elencoSplashBomba = new ArrayList<Sprite>();
+    
     // Musica
     public static double volume = 0.25;
     // Main theme
@@ -83,12 +88,6 @@ public class MainApp extends Application {
     static String musicFile7 = "src/main/music/bombMini.mp3";
     static Media bombCut = new Media(new File(musicFile7).toURI().toString());
     static MediaPlayer mediaPlayerBomb = new MediaPlayer(bombCut);
-
-    // Gestione Splash
-    // Crea un arraylist per gestire gli splash
-    public static ArrayList<Sprite> elencoSplash = new ArrayList<Sprite>();
-    public static ArrayList<Sprite> elencoSplashBomba = new ArrayList<Sprite>();
-
 
     @Override
     public void start(Stage primaryStage) {
@@ -130,7 +129,6 @@ public class MainApp extends Application {
         // Ripristina il cursore predefinito quando il mouse esce dalla scena
         scene.setOnMouseExited(mouseEvent -> canvas.setCursor(Cursor.DEFAULT));
         mainMenu(scene);
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -423,10 +421,12 @@ public class MainApp extends Application {
                 });
 
                 // Ogni volta che il tempo trascorso raggiunge un secondo, chiama cambiaVita() e reimposta il contatore
+                /*
                 if (elapsedTimeCounter >= 1) {
                     vite.cambiaVita();
                     elapsedTimeCounter = 0;
                 }
+                */
             }
         };
         infoMenuTimer.start();
