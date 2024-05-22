@@ -22,7 +22,6 @@ public class Sprite {
     private double height;
     private double opacity = 1.0; // Opacità predefinita
     private int difficolta;
-    private int difficoltaBomba;
 
     // Attributi per la gestione del movimento
     // private double gravity = 9.81;
@@ -144,7 +143,6 @@ public class Sprite {
     public void setImageRandom() {
 
         difficolta = 70; // 70% di probabilità di uscita di un frutto
-        difficoltaBomba = 80; // 80% di probabilità di uscita di una bomba non fatale
 
         // Genera un numero casuale tra 0 e 99
         int num = (int) (Math.random() * 100);
@@ -180,17 +178,21 @@ public class Sprite {
                         break;
                 }
             } else {
-                int k = (int) (Math.random() * 100);
-                if (k > difficoltaBomba) {
-                    setImage("main/images/bombFatalMedium.png");
-                    tipoSprite = "bombFatal";
-                    bomba = true;
-                } else {
-                    setImage("main/images/bombTimeMedium.png");
-                    tipoSprite = "bombTime";
-                    bomba = true;
+                int k = (int) (Math.random() * 2);
+                switch (k) {
+                    case 0:
+                        setImage("main/images/bombFatalMedium.png");
+                        tipoSprite = "bombFatal";
+                        bomba = true;
+                        break;
+                    case 1:
+                        setImage("main/images/bombTimeMedium.png");
+                        tipoSprite = "bombTime";
+                        bomba = true;
+                        break;
+                    default:
+                        break;
                 }
-
             }
         } else {
             int h = (int) (Math.random() * 2);

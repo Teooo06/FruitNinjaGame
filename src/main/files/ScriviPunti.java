@@ -8,7 +8,6 @@ public class ScriviPunti {
 
     // Costruttore
     public ScriviPunti() {
-
     }
 
     // Metodo per scrivere il punteggio su file cancellando i dati precedenti

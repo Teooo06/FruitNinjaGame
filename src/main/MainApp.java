@@ -101,12 +101,6 @@ public class MainApp extends Application {
         
         Canvas canvas = new Canvas(dimX, dimY);
 
-        // Carica l'immagine del cursore personalizzato
-        Image cursorImage = new Image("main/images/katana.png");
-
-        // Crea un cursore personalizzato utilizzando l'immagine caricata
-        Cursor customCursor = new ImageCursor(cursorImage);
-        canvas.setCursor(customCursor);
 
         //Group root = new Group(canvas,pane);
         Group root = new Group(canvas);
@@ -124,7 +118,14 @@ public class MainApp extends Application {
         BestScore = leggiPunti.leggiPunti();
 
         // Cambia il cursore quando il mouse entra nella scena
-        scene.setOnMouseEntered(mouseEvent -> canvas.setCursor(customCursor));
+        scene.setOnMouseEntered(mouseEvent -> {
+            // Carica l'immagine del cursore personalizzato
+            Image cursorImage = new Image("main/images/katana.png");
+
+            // Crea un cursore personalizzato utilizzando l'immagine caricata
+            Cursor customCursor = new ImageCursor(cursorImage);
+            canvas.setCursor(customCursor);
+        });
 
         // Ripristina il cursore predefinito quando il mouse esce dalla scena
         scene.setOnMouseExited(mouseEvent -> canvas.setCursor(Cursor.DEFAULT));

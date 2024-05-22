@@ -9,13 +9,11 @@ import java.util.Arrays;
 public class LeggiPunti {
 
     public void LeggiDati() {
-
     }
 
     public int leggiPunti() {
         try {
             int punteggio = 0;
-
             //aprtura del file da leggere
             FileReader apertura = new FileReader("./src/main/files/punteggio.txt");
             BufferedReader fileDaLeggere = new BufferedReader(apertura);
@@ -27,7 +25,7 @@ public class LeggiPunti {
                 String [] dati = linea.split("\\+");
                 datiArrayList.addAll(Arrays.asList(dati));
             }
-            
+
             for (int i = 0; i < datiArrayList.size(); i++) {
                 punteggio += Integer.parseInt(datiArrayList.get(i));
             }
@@ -39,10 +37,5 @@ public class LeggiPunti {
             e.printStackTrace();
             return 0;
         }
-        
-    }
-
-    
-
-    
+    } 
 }
